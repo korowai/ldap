@@ -43,21 +43,21 @@ class EntryManagerTest extends TestCase
         return $link;
     }
 
-    public function test_construct()
+    public function test__construct()
     {
         $link = $this->createMock(LdapLink::class);
         $mngr = new EntryManager($link);
         $this->assertTrue(true); // didn't blow up
     }
 
-    public function test_getLink()
+    public function test__getLink()
     {
         $link = $this->createMock(LdapLink::class);
         $mngr = new EntryManager($link);
         $this->assertSame($link, $mngr->getLink());
     }
 
-    public function test_add()
+    public function test__add()
     {
         $attributes = array('attr1' => array('attr1val1'));
         $entry = new Entry('dc=korowai,dc=org', $attributes);
@@ -72,7 +72,7 @@ class EntryManagerTest extends TestCase
         $this->assertNull($mngr->add($entry));
     }
 
-    public function test_add_UninitializedLink()
+    public function test__add__UninitializedLink()
     {
         $attributes = array('attr1' => array('attr1val1'));
         $entry = new Entry('dc=korowai,dc=org', $attributes);
@@ -93,7 +93,7 @@ class EntryManagerTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_add_Failure()
+    public function test__add__Failure()
     {
         $attributes = array('attr1' => array('attr1val1'));
         $entry = new Entry('dc=korowai,dc=org', $attributes);
@@ -120,7 +120,7 @@ class EntryManagerTest extends TestCase
         $mngr->add($entry);
     }
 
-    public function test_update()
+    public function test__update()
     {
         $attributes = array('attr1' => array('attr1val1'));
         $entry = new Entry('dc=korowai,dc=org', $attributes);
@@ -135,7 +135,7 @@ class EntryManagerTest extends TestCase
         $this->assertNull($mngr->update($entry));
     }
 
-    public function test_update_Invalid()
+    public function test__update__Invalid()
     {
         $attributes = array('attr1' => array('attr1val1'));
         $entry = new Entry('dc=korowai,dc=org', $attributes);
@@ -156,7 +156,7 @@ class EntryManagerTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_update_Failure()
+    public function test__update__Failure()
     {
         $attributes = array('attr1' => array('attr1val1'));
         $entry = new Entry('dc=korowai,dc=org', $attributes);
@@ -183,7 +183,7 @@ class EntryManagerTest extends TestCase
         $mngr->update($entry);
     }
 
-    public function test_rename_Default()
+    public function test__rename__Default()
     {
         $entry = new Entry('dc=korowai,dc=org');
 
@@ -197,7 +197,7 @@ class EntryManagerTest extends TestCase
         $this->assertNull($mngr->rename($entry,'cn=korowai'));
     }
 
-    public function test_rename_DeleteOldRdn()
+    public function test__rename__DeleteOldRdn()
     {
         $entry = new Entry('dc=korowai,dc=org');
 
@@ -211,7 +211,7 @@ class EntryManagerTest extends TestCase
         $this->assertNull($mngr->rename($entry,'cn=korowai', true));
     }
 
-    public function test_rename_LeaveOldRdn()
+    public function test__rename__LeaveOldRdn()
     {
         $entry = new Entry('dc=korowai,dc=org');
 
@@ -225,7 +225,7 @@ class EntryManagerTest extends TestCase
         $this->assertNull($mngr->rename($entry,'cn=korowai', false));
     }
 
-    public function test_rename_Invalid()
+    public function test__rename__Invalid()
     {
         $entry = new Entry('dc=korowai,dc=org');
 
@@ -245,7 +245,7 @@ class EntryManagerTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_rename_Failure()
+    public function test__rename__Failure()
     {
         $entry = new Entry('dc=korowai,dc=org');
 
@@ -271,7 +271,7 @@ class EntryManagerTest extends TestCase
         $mngr->rename($entry,'cn=korowai', true);
     }
 
-    public function test_delete()
+    public function test__delete()
     {
         $entry = new Entry('dc=korowai,dc=org');
 
@@ -285,7 +285,7 @@ class EntryManagerTest extends TestCase
         $this->assertNull($mngr->delete($entry));
     }
 
-    public function test_delete_Invalid()
+    public function test__delete__Invalid()
     {
         $entry = new Entry('dc=korowai,dc=org');
 
@@ -305,7 +305,7 @@ class EntryManagerTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_delete_Failure()
+    public function test__delete__Failure()
     {
         $entry = new Entry('dc=korowai,dc=org');
 

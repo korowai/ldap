@@ -14,11 +14,7 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 
 use Korowai\Lib\Ldap\Adapter\EntryManagerInterface;
-use Korowai\Lib\Ldap\Entry;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
-
-use Korowai\Lib\Ldap\Adapter\ExtLdap\EnsureLdapLink;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LastLdapException;
+use Korowai\Lib\Ldap\EntryInterface;
 
 use function Korowai\Lib\Context\with;
 use function Korowai\Lib\Error\emptyErrorHandler;
@@ -56,7 +52,7 @@ class EntryManager implements EntryManagerInterface
      *
      * Invokes ldap_add().
      */
-    public function add(Entry $entry)
+    public function add(EntryInterface $entry)
     {
         return $this->callImplMethod('addImpl', $entry);
     }
@@ -66,7 +62,7 @@ class EntryManager implements EntryManagerInterface
      *
      * Invokes ldap_modify()
      */
-    public function update(Entry $entry)
+    public function update(EntryInterface $entry)
     {
         return $this->callImplMethod('updateImpl', $entry);
     }
@@ -76,7 +72,7 @@ class EntryManager implements EntryManagerInterface
      *
      * Invokes ldap_rename()
      */
-    public function rename(Entry $entry, string $newRdn, bool $deleteOldRdn = true)
+    public function rename(EntryInterface $entry, string $newRdn, bool $deleteOldRdn = true)
     {
         return $this->callImplMethod('renameImpl', $entry, $newRdn, $deleteOldRdn);
     }
@@ -86,7 +82,7 @@ class EntryManager implements EntryManagerInterface
      *
      * Invokes ldap_delete()
      */
-    public function delete(Entry $entry)
+    public function delete(EntryInterface $entry)
     {
         return $this->callImplMethod('deleteImpl', $entry);
     }
@@ -105,7 +101,7 @@ class EntryManager implements EntryManagerInterface
     /**
      * @internal
      */
-    private function addImpl(Entry $entry)
+    private function addImpl(EntryInterface $entry)
     {
         if (!$this->getLink()->add($entry->getDn(), $entry->getAttributes())) {
             throw static::lastLdapException($this->link);
@@ -115,7 +111,7 @@ class EntryManager implements EntryManagerInterface
     /**
      * @internal
      */
-    public function updateImpl(Entry $entry)
+    public function updateImpl(EntryInterface $entry)
     {
         if (!$this->getLink()->modify($entry->getDn(), $entry->getAttributes())) {
             throw static::lastLdapException($this->link);
@@ -127,7 +123,7 @@ class EntryManager implements EntryManagerInterface
      *
      * Invokes ldap_rename()
      */
-    public function renameImpl(Entry $entry, string $newRdn, bool $deleteOldRdn = true)
+    public function renameImpl(EntryInterface $entry, string $newRdn, bool $deleteOldRdn = true)
     {
         if (!$this->getLink()->rename($entry->getDn(), $newRdn, null, $deleteOldRdn)) {
             throw static::lastLdapException($this->link);
@@ -139,7 +135,7 @@ class EntryManager implements EntryManagerInterface
      *
      * Invokes ldap_delete()
      */
-    public function deleteImpl(Entry $entry)
+    public function deleteImpl(EntryInterface $entry)
     {
         if (!$this->getLink()->delete($entry->getDn())) {
             throw static::lastLdapException($this->link);

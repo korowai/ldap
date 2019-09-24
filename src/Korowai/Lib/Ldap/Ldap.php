@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Korowai\Lib\Ldap;
 
-use Korowai\Lib\Ldap\Entry;
-use Korowai\Lib\Ldap\AbstractLdap;
 use Korowai\Lib\Ldap\Adapter\AdapterInterface;
 use Korowai\Lib\Ldap\Adapter\AdapterFactoryInterface;
 use Korowai\Lib\Ldap\Adapter\BindingInterface;
@@ -125,7 +123,7 @@ class Ldap extends AbstractLdap
     /**
      * {@inheritdoc}
      */
-    public function add(Entry $entry)
+    public function add(EntryInterface $entry)
     {
         return $this->getEntryManager()->add($entry);
     }
@@ -133,7 +131,7 @@ class Ldap extends AbstractLdap
     /**
      * {@inheritdoc}
      */
-    public function update(Entry $entry)
+    public function update(EntryInterface $entry)
     {
         return $this->getEntryManager()->update($entry);
     }
@@ -141,7 +139,7 @@ class Ldap extends AbstractLdap
     /**
      * {@inheritdoc}
      */
-    public function rename(Entry $entry, string $newRdn, bool $deleteOldRdn = true)
+    public function rename(EntryInterface $entry, string $newRdn, bool $deleteOldRdn = true)
     {
         return $this->getEntryManager()->rename($entry, $newRdn, $deleteOldRdn);
     }
@@ -149,7 +147,7 @@ class Ldap extends AbstractLdap
     /**
      * {@inheritdoc}
      */
-    public function delete(Entry $entry)
+    public function delete(EntryInterface $entry)
     {
         return $this->getEntryManager()->delete($entry);
     }

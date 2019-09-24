@@ -20,7 +20,7 @@ use Korowai\Lib\Ldap\Exception\AttributeException;
  *
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class Entry
+class Entry implements EntryInterface
 {
     private $dn;
     private $attributes;
@@ -38,9 +38,7 @@ class Entry
     }
 
     /**
-     * Retuns the entry's DN.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getDn() : string
     {
@@ -48,10 +46,7 @@ class Entry
     }
 
     /**
-     * Sets the entry's DN.
-     *
-     * @param string $dn
-     * @throws \TypeError
+     * {@inheritdoc}
      */
     public function setDn(string $dn)
     {
@@ -70,9 +65,7 @@ class Entry
     }
 
     /**
-     * Returns the complete array of attributes
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getAttributes() : array
     {
@@ -80,12 +73,7 @@ class Entry
     }
 
     /**
-     * Returns a specific attribute's values
-     *
-     * @param string $name
-     *
-     * @throws AttributeException
-     * @return array
+     * {@inheritdoc}
      */
     public function getAttribute(string $name) : array
     {
@@ -107,9 +95,7 @@ class Entry
     }
 
     /**
-     * Retuns whether an attribute exists.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasAttribute(string $name) : bool
     {
@@ -117,14 +103,7 @@ class Entry
     }
 
     /**
-     * Sets attributes.
-     *
-     * For each attribute in $attributes, if attribute already exists in Entry,
-     * its values will be replaced with values provided in $attributes. If
-     * there is no attribute in Entry, it'll be added to Entry.
-     *
-     * @param array $attributes
-     * @throws AttributeException
+     * {@inheritdoc}
      */
     public function setAttributes(array $attributes)
     {
@@ -149,10 +128,7 @@ class Entry
     }
 
     /**
-     * Sets values for the given attribute
-     *
-     * @param string $name
-     * @param array $values
+     * {@inheritdoc}
      */
     public function setAttribute(string $name, array $values)
     {

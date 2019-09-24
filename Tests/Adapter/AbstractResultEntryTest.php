@@ -41,7 +41,7 @@ class AbstractResultEntryTest extends TestCase
         return $builder->getMockForAbstractClass();
     }
 
-    public function test_toEntry()
+    public function test__toEntry()
     {
         $dn = 'uid=jsmith,ou=people,dc=korowai,dc=org';
         $attributes = array(

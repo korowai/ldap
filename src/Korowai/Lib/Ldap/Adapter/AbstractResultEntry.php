@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Korowai\Lib\Ldap\Adapter;
 
-use Korowai\Lib\Ldap\Adapter\ResultEntryInterface;
 use Korowai\Lib\Ldap\Entry;
+use Korowai\Lib\Ldap\EntryInterface;
 
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
@@ -24,7 +24,7 @@ abstract class AbstractResultEntry implements ResultEntryInterface
     /**
      * {@inheritdoc}
      */
-    public function toEntry() : Entry
+    public function toEntry() : EntryInterface
     {
         return new Entry($this->getDn(), $this->getAttributes());
     }
