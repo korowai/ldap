@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Korowai\Lib\Ldap\Adapter;
 
-use Korowai\Lib\Ldap\Adapter\ResultInterface;
-
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */

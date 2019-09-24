@@ -16,12 +16,6 @@ namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 use Korowai\Lib\Ldap\Adapter\AdapterInterface;
 use Korowai\Lib\Ldap\Adapter\AbstractAdapterFactory;
 use Korowai\Lib\Ldap\Exception\LdapException;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\Adapter;
-
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLinkOptions;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\EnsureLdapLink;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LastLdapException;
 
 use function Korowai\Lib\Context\with;
 use function Korowai\Lib\Error\emptyErrorHandler;

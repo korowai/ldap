@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 
 use Korowai\Lib\Ldap\Exception\LdapException;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
 
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>

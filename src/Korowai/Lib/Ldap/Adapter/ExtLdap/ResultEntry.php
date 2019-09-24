@@ -15,8 +15,6 @@ namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 
 use Korowai\Lib\Ldap\Adapter\AbstractResultEntry;
 use Korowai\Lib\Ldap\Adapter\ResultAttributeIteratorInterface;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultAttributeIterator;
 
 /**
  * Wrapper for ldap entry result resource.

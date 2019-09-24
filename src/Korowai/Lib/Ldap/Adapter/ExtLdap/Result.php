@@ -16,9 +16,6 @@ namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 use Korowai\Lib\Ldap\Adapter\AbstractResult;
 use Korowai\Lib\Ldap\Adapter\ResultEntryIteratorInterface;
 use Korowai\Lib\Ldap\Adapter\ResultReferenceIteratorInterface;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntryIterator;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultReferenceIterator;
 
 /**
  * Wrapper for ldap result resource.

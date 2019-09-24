@@ -14,10 +14,6 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 
 use Korowai\Lib\Ldap\Adapter\ResultReferenceInterface;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntry;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultAttributeIterator;
 
 /**
  * Wrapper for ldap reference result resource.

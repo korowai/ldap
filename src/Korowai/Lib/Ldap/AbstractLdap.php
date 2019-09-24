@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Korowai\Lib\Ldap;
 
-use Korowai\Lib\Ldap\LdapInterface;
 use Korowai\Lib\Ldap\Adapter\ResultInterface;
 
 use \InvalidArgumentException;
