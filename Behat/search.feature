@@ -1,11 +1,11 @@
 @initDbBeforeFeature
 @initDbAfterFeature
-Feature: Query
+Feature: Search
 
-  Scenario: Successful query for an empty yet subtree
+  Scenario: Successful search in an empty yet subtree
     Given I am connected to uri "ldap://ldap-service"
     And I am bound with binddn "cn=admin,dc=example,dc=org" and password "admin"
-    When I query with basedn "dc=empty,dc=example,dc=org" and filter "(objectclass=*)"
+    When I search with basedn "dc=empty,dc=example,dc=org" and filter "(objectclass=*)"
     Then I should see no exception
     And I should have last result entries
         """
@@ -17,10 +17,10 @@ Feature: Query
         }
         """
 
-  Scenario: Successful query for a non-empty subtree
+  Scenario: Successful search in a non-empty subtree
     Given I am connected to uri "ldap://ldap-service"
     And I am bound with binddn "cn=admin,dc=example,dc=org" and password "admin"
-    When I query with basedn "ou=people,dc=example,dc=org" and filter "(objectclass=*)"
+    When I search with basedn "ou=people,dc=example,dc=org" and filter "(objectclass=*)"
     Then I should see no exception
     And I should have last result entries
         """
@@ -48,10 +48,10 @@ Feature: Query
         }
         """
 
-  Scenario: Successful query with the 'scope=base' option and default filter
+  Scenario: Successful search with the 'scope=base' option and default filter
     Given I am connected to uri "ldap://ldap-service"
     And I am bound with binddn "cn=admin,dc=example,dc=org" and password "admin"
-    When I query with basedn "ou=people,dc=example,dc=org", filter "(objectclass=*)" and options '{"scope": "base"}'
+    When I search with basedn "ou=people,dc=example,dc=org", filter "(objectclass=*)" and options '{"scope": "base"}'
     Then I should see no exception
     And I should have last result entries
         """
@@ -62,10 +62,10 @@ Feature: Query
         }
         """
 
-  Scenario: Successful query with the 'scope=one' option and default filter
+  Scenario: Successful search with the 'scope=one' option and default filter
     Given I am connected to uri "ldap://ldap-service"
     And I am bound with binddn "cn=admin,dc=example,dc=org" and password "admin"
-    When I query with basedn "dc=example,dc=org", filter "(objectclass=*)" and options '{"scope": "one"}'
+    When I search with basedn "dc=example,dc=org", filter "(objectclass=*)" and options '{"scope": "one"}'
     Then I should see no exception
     And I should have last result entries
         """
@@ -89,10 +89,10 @@ Feature: Query
         }
         """
 
-  Scenario: Successful query with the 'scope=one' option and custom filter
+  Scenario: Successful search with the 'scope=one' option and custom filter
     Given I am connected to uri "ldap://ldap-service"
     And I am bound with binddn "cn=admin,dc=example,dc=org" and password "admin"
-    When I query with basedn "dc=example,dc=org", filter "(objectclass=dcObject)" and options '{"scope": "one"}'
+    When I search with basedn "dc=example,dc=org", filter "(objectclass=dcObject)" and options '{"scope": "one"}'
     Then I should see no exception
     And I should have last result entries
         """
@@ -107,3 +107,9 @@ Feature: Query
             "o": ["Subtree, Example Org."]}
         }
         """
+
+  Scenario: Unsuccessful search starting from inexistent base DN
+    Given I am connected to uri "ldap://ldap-service"
+    And I am bound with binddn "cn=admin,dc=example,dc=org" and password "admin"
+    When I search with basedn "cn=inexistent,dc=example,dc=org", filter "(objectclass=dcObject)" and options '{"scope": "one"}'
+    Then I should see ldap exception with message "No such object"

@@ -18,7 +18,8 @@ use Korowai\Lib\Ldap\Adapter\AdapterInterface;
 use Korowai\Lib\Ldap\Adapter\AdapterFactoryInterface;
 use Korowai\Lib\Ldap\Adapter\BindingInterface;
 use Korowai\Lib\Ldap\Adapter\EntryManagerInterface;
-use Korowai\Lib\Ldap\Adapter\QueryInterface;
+use Korowai\Lib\Ldap\Adapter\SearchQueryInterface;
+use Korowai\Lib\Ldap\Adapter\CompareQueryInterface;
 use Korowai\Lib\Ldap\Adapter\ResultInterface;
 
 use \InvalidArgumentException;
@@ -155,9 +156,17 @@ class Ldap extends AbstractLdap
     /**
      * {@inheritdoc}
      */
-    public function createQuery(string $base_dn, string $filter, array $options = array()) : QueryInterface
+    public function createSearchQuery(string $base_dn, string $filter, array $options = array()) : SearchQueryInterface
     {
-        return $this->getAdapter()->createQuery($base_dn, $filter, $options);
+        return $this->getAdapter()->createSearchQuery($base_dn, $filter, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createCompareQuery(string $dn, string $attribute, string $value) : CompareQueryInterface
+    {
+        return $this->getAdapter()->createCompareQuery($dn, $attribute, $value);
     }
 
     protected static function checkFactoryClassArg($factoryClass, $method, $argno)

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file src/Korowai/Lib/Ldap/Adapter/ExtLdap/Query.php
+ * @file src/Korowai/Lib/Ldap/Adapter/ExtLdap/SearchQuery.php
  *
  * This file is part of the Korowai package
  *
@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 
-use Korowai\Lib\Ldap\Adapter\AbstractQuery;
+use Korowai\Lib\Ldap\Adapter\AbstractSearchQuery;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
 use Korowai\Lib\Ldap\Adapter\ResultInterface;
@@ -28,7 +28,7 @@ use Symfony\Component\OptionsResolver\Options;
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class Query extends AbstractQuery
+class SearchQuery extends AbstractSearchQuery
 {
     use EnsureLdapLink;
     use LastLdapException;
@@ -37,7 +37,7 @@ class Query extends AbstractQuery
     private $link;
 
     /**
-     * Constructs Query
+     * Constructs SearchQuery
      */
     public function __construct(LdapLink $link, string $base_dn, string $filter, array $options = array())
     {
@@ -82,7 +82,7 @@ class Query extends AbstractQuery
                 $func = 'search';
                 break;
             default:
-                // This should be actualy covered by OptionsResolver in AbstractQuery::__construct()
+                // This should be actualy covered by OptionsResolver in AbstractSearchQuery::__construct()
                 throw new \RuntimeException(sprintf('Unsupported search scope "%s"', $options['scope']));
         }
 

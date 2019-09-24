@@ -1,6 +1,6 @@
 <?php
 /**
- * @file Tests/Adapter/ExtLdap/QueryTest.php
+ * @file Tests/Adapter/ExtLdap/SearchQueryTest.php
  *
  * This file is part of the Korowai package
  *
@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Tests\Adapter\ExtLdap;
 
 use PHPUnit\Framework\TestCase;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\Query;
+use Korowai\Lib\Ldap\Adapter\AbstractSearchQuery;
+use Korowai\Lib\Ldap\Adapter\ExtLdap\SearchQuery;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
 use Korowai\Lib\Ldap\Adapter\ResultInterface;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -22,13 +23,19 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class QueryTest extends TestCase
+class SearchQueryTest extends TestCase
 {
     use \phpmock\phpunit\PHPMock;
 
     public function getLdapFunctionMock(...$args)
     {
         return $this->getFunctionMock('\\Korowai\\Lib\\Ldap\\Adapter\ExtLdap', ...$args);
+    }
+
+    public function test__extends__AbstractSearchQuery()
+    {
+        $parents = class_parents(SearchQuery::class);
+        $this->assertContains(AbstractSearchQuery::class, $parents);
     }
 
     public function createLdapLinkMock($valid, $unbind = true)
@@ -46,7 +53,7 @@ class QueryTest extends TestCase
     public function test__construct()
     {
         $link = $this->createMock(LdapLink::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*");
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*");
         $this->assertTrue(true); // didn't blow up
     }
 
@@ -58,13 +65,13 @@ class QueryTest extends TestCase
         $this->expectException(InvalidOptionsException::class);
         $this->expectExceptionMessageRegExp('/option "scope" with value "foo"/');
 
-        new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'foo']);
+        new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'foo']);
     }
 
     public function test__getLink()
     {
         $link = $this->createMock(LdapLink::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*");
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*");
         $this->assertSame($link, $query->getLink());
     }
 
@@ -72,7 +79,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'base']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'base']);
         $link->expects($this->exactly(2))
              ->method('read')
              ->with("dc=korowai,dc=org", "objectClass=*", ["*"], 0, 0, 0, LDAP_DEREF_NEVER)
@@ -90,7 +97,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'one']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'one']);
         $link->expects($this->never())
              ->method('read');
         $link->expects($this->exactly(2))
@@ -108,7 +115,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
         $link->expects($this->never())
              ->method('read');
         $link->expects($this->never())
@@ -126,7 +133,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*");
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*");
         $link->expects($this->never())
              ->method('read');
         $link->expects($this->never())
@@ -145,7 +152,7 @@ class QueryTest extends TestCase
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
 
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SearchQuery::class)
                       ->disableOriginalConstructor()
                       ->setMethods(['getOptions', 'getLink', 'getBaseDn', 'getFilter'])
                       ->getMock();
@@ -185,7 +192,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
 
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SearchQuery::class)
                       ->disableOriginalConstructor()
                       ->setMethods(['getOptions'])
                       ->getMock();
@@ -205,7 +212,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(false);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
         $link->expects($this->never())
              ->method('read');
         $link->expects($this->never())
@@ -217,7 +224,7 @@ class QueryTest extends TestCase
         $this->expectExceptionCode(-1);
         $this->expectExceptionMessage('Uninitialized LDAP link');
 
-        $this->assertSame($result, $query->execute());
+        $query->execute();
     }
 
     /**
@@ -226,7 +233,7 @@ class QueryTest extends TestCase
     public function test__execute__LdapError()
     {
         $link = $this->createLdapLinkMock(true);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
         $link->expects($this->never())
              ->method('read');
         $link->expects($this->never())
@@ -254,7 +261,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'base']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'base']);
         $link->expects($this->once())
              ->method('read')
              ->with("dc=korowai,dc=org", "objectClass=*", ["*"], 0, 0, 0, LDAP_DEREF_NEVER)
@@ -271,7 +278,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'one']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'one']);
         $link->expects($this->never())
              ->method('read');
         $link->expects($this->once())
@@ -288,7 +295,7 @@ class QueryTest extends TestCase
     {
         $link = $this->createLdapLinkMock(true);
         $result = $this->createMock(ResultInterface::class);
-        $query = new Query($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
+        $query = new SearchQuery($link, "dc=korowai,dc=org", "objectClass=*", ['scope' => 'sub']);
         $link->expects($this->never())
              ->method('read');
         $link->expects($this->never())

@@ -19,7 +19,8 @@ use Korowai\Lib\Ldap\Adapter\ExtLdap\Adapter;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Binding;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\EntryManager;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\Query;
+use Korowai\Lib\Ldap\Adapter\ExtLdap\SearchQuery;
+use Korowai\Lib\Ldap\Adapter\ExtLdap\CompareQuery;
 
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
@@ -33,7 +34,7 @@ class AdapterTest extends TestCase
         return $this->getFunctionMock('\\Korowai\\Lib\\Ldap\\Adapter\ExtLdap', ...$args);
     }
 
-    public function test_getBinding()
+    public function test__getBinding()
     {
         $link = $this->createMock(LdapLink::class);
 
@@ -45,7 +46,7 @@ class AdapterTest extends TestCase
         $this->assertInstanceOf(Binding::class, $bind1);
     }
 
-    public function test_getEntryManager()
+    public function test__getEntryManager()
     {
         $link = $this->createMock(LdapLink::class);
 
@@ -57,18 +58,32 @@ class AdapterTest extends TestCase
         $this->assertInstanceOf(EntryManager::class, $em1);
     }
 
-    public function test_createQuery()
+    public function test__createSearchQuery()
     {
         $link = $this->createMock(LdapLink::class);
 
         $adapter = new Adapter($link);
 
-        $query = $adapter->createQuery("dc=korowai,dc=org", "objectClass=*", array('scope' => 'one'));
+        $query = $adapter->createSearchQuery("dc=korowai,dc=org", "objectClass=*", array('scope' => 'one'));
 
-        $this->assertInstanceOf(Query::class, $query);
+        $this->assertInstanceOf(SearchQuery::class, $query);
         $this->assertEquals("dc=korowai,dc=org", $query->getBaseDn());
         $this->assertEquals("objectClass=*", $query->getFilter());
         $this->assertEquals('one', $query->getOptions()['scope']);
+    }
+
+    public function test__createCompareQuery()
+    {
+        $link = $this->createMock(LdapLink::class);
+
+        $adapter = new Adapter($link);
+
+        $query = $adapter->createCompareQuery('uid=jsmith,ou=people,dc=example,dc=org', 'userpassword', 'secret');
+
+        $this->assertInstanceOf(CompareQuery::class, $query);
+        $this->assertEquals("uid=jsmith,ou=people,dc=example,dc=org", $query->getDn());
+        $this->assertEquals("userpassword", $query->getAttribute());
+        $this->assertEquals('secret', $query->getValue());
     }
 }
 

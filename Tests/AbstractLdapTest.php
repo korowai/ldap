@@ -16,7 +16,8 @@ namespace Korowai\Lib\Ldap\Tests;
 use PHPUnit\Framework\TestCase;
 use Korowai\Lib\Ldap\AbstractLdap;
 use Korowai\Lib\Ldap\LdapInterface;
-use Korowai\Lib\Ldap\Adapter\QueryInterface;
+use Korowai\Lib\Ldap\Adapter\SearchQueryInterface;
+use Korowai\Lib\Ldap\Adapter\CompareQueryInterface;
 use Korowai\Lib\Ldap\Adapter\ResultInterface;
 
 /**
@@ -35,7 +36,7 @@ class AbstractLdapTest extends TestCase
         $result = $this->getMockBuilder(ResultInterface::class)
                        ->getMockForAbstractClass();
 
-        $query = $this->getMockBuilder(QueryInterface::class)
+        $query = $this->getMockBuilder(SearchQueryInterface::class)
                       ->setMethods(['getResult'])
                       ->getMockForAbstractClass();
 
@@ -45,16 +46,40 @@ class AbstractLdapTest extends TestCase
               ->willReturn($result);
 
         $ldap = $this->getMockBuilder(AbstractLdap::class)
-                     ->setMethods(['createQuery'])
+                     ->setMethods(['createSearchQuery'])
                      ->getMockForAbstractClass();
 
         $args = [ 'dc=example,dc=org', '(objectClass=*)', ['foo'] ];
         $ldap->expects($this->once())
-             ->method('createQuery')
+             ->method('createSearchQuery')
              ->with(...$args)
              ->willReturn($query);
 
         $this->assertSame($result, $ldap->query(...$args));
+    }
+
+    public function test__compare()
+    {
+        $query = $this->getMockBuilder(CompareQueryInterface::class)
+                      ->setMethods(['getResult'])
+                      ->getMockForAbstractClass();
+
+        $query->expects($this->once())
+              ->method('getResult')
+              ->with()
+              ->willReturn(true);
+
+        $ldap = $this->getMockBuilder(AbstractLdap::class)
+                     ->setMethods(['createCompareQuery'])
+                     ->getMockForAbstractClass();
+
+        $args = [ 'uid=jsmith,ou=people,dc=example,dc=org', 'userpassword', 'secret' ];
+        $ldap->expects($this->once())
+             ->method('createCompareQuery')
+             ->with(...$args)
+             ->willReturn($query);
+
+        $this->assertTrue($ldap->compare(...$args));
     }
 }
 

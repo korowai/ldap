@@ -16,14 +16,8 @@ namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 use Korowai\Lib\Ldap\Adapter\AdapterInterface;
 use Korowai\Lib\Ldap\Adapter\BindingInterface;
 use Korowai\Lib\Ldap\Adapter\EntryManagerInterface;
-use Korowai\Lib\Ldap\Adapter\QueryInterface;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\Binding;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\EntryManager;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\Query;
-use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
-
-use Korowai\Lib\Ldap\Adapter\ExtLdap\EnsureLdapLink;
-
+use Korowai\Lib\Ldap\Adapter\SearchQueryInterface;
+use Korowai\Lib\Ldap\Adapter\CompareQueryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
 
@@ -77,9 +71,17 @@ class Adapter implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function createQuery(string $base_dn, string $filter, array $options = array()) : QueryInterface
+    public function createSearchQuery(string $base_dn, string $filter, array $options = array()) : SearchQueryInterface
     {
-        return new Query($this->getLdapLink(), $base_dn, $filter, $options);
+        return new SearchQuery($this->getLdapLink(), $base_dn, $filter, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createCompareQuery(string $dn, string $attribute, string $value) : CompareQueryInterface
+    {
+        return new CompareQuery($this->getLdapLink(), $dn, $attribute, $value);
     }
 }
 

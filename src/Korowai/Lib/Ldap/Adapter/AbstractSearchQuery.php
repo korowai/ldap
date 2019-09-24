@@ -1,6 +1,6 @@
 <?php
 /**
- * @file src/Korowai/Lib/Ldap/Adapter/AbstractQuery.php
+ * @file src/Korowai/Lib/Ldap/Adapter/AbstractSearchQuery.php
  *
  * This file is part of the Korowai package
  *
@@ -13,16 +13,13 @@ declare(strict_types=1);
 
 namespace Korowai\Lib\Ldap\Adapter;
 
-use Korowai\Lib\Ldap\Adapter\QueryInterface;
-use Korowai\Lib\Ldap\Adapter\ResultInterface;
-
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\Options;
 
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-abstract class AbstractQuery implements QueryInterface
+abstract class AbstractSearchQuery implements SearchQueryInterface
 {
     /** @var string */
     protected $base_dn;
@@ -35,7 +32,7 @@ abstract class AbstractQuery implements QueryInterface
 
 
     /**
-     * Constructs AbstractQuery
+     * Constructs AbstractSearchQuery
      *
      * @param string $base_dn
      * @param string $filter

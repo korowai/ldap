@@ -22,7 +22,8 @@ use Korowai\Lib\Ldap\Adapter\AdapterFactoryInterface;
 use Korowai\Lib\Ldap\Adapter\EntryManagerInterface;
 use Korowai\Lib\Ldap\Entry;
 
-use Korowai\Lib\Ldap\Adapter\QueryInterface;
+use Korowai\Lib\Ldap\Adapter\SearchQueryInterface;
+use Korowai\Lib\Ldap\Adapter\CompareQueryInterface;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Adapter;
 
 class SomeClass {}
@@ -42,7 +43,7 @@ class LdapTest extends TestCase
     private function getAdapterMock()
     {
         return $this->getMockBuilder(AdapterInterface::class)
-                    ->setMethods(['getBinding', 'getEntryManager', 'createQuery'])
+                    ->setMethods(['getBinding', 'getEntryManager', 'createSearchQuery', 'createCompareQuery'])
                     ->getMock();
     }
 
@@ -60,9 +61,16 @@ class LdapTest extends TestCase
                     ->getMock();
     }
 
-    private function getQueryMock()
+    private function getSearchQueryMock()
     {
-        return $this->getMockBuilder(QueryInterface::class)
+        return $this->getMockBuilder(SearchQueryInterface::class)
+                    ->setMethods(['getResult', 'execute'])
+                    ->getMock();
+    }
+
+    private function getCompareQueryMock()
+    {
+        return $this->getMockBuilder(CompareQueryInterface::class)
                     ->setMethods(['getResult', 'execute'])
                     ->getMock();
     }
@@ -385,35 +393,49 @@ class LdapTest extends TestCase
         $this->assertSame('ok', $ldap->delete($entry));
     }
 
-    public function test__createQuery__DefaultOptions()
+    public function test__createSearchQuery__DefaultOptions()
     {
         $adapter = $this->getAdapterMock();
-        $query = $this->getQueryMock();
+        $search = $this->getSearchQueryMock();
         $ldap = new Ldap($adapter);
 
         $adapter->expects($this->once())
-                ->method('createQuery')
+                ->method('createSearchQuery')
                 ->with('dc=example,dc=org', 'objectClass=*', array())
-                ->willReturn($query);
+                ->willReturn($search);
 
-        $this->assertEquals($query, $ldap->createQuery('dc=example,dc=org', 'objectClass=*'));
+        $this->assertEquals($search, $ldap->createSearchQuery('dc=example,dc=org', 'objectClass=*'));
     }
 
-    public function test__createQuery__CustomOptions()
+    public function test__createSearchQuery__CustomOptions()
     {
         $adapter = $this->getAdapterMock();
-        $query = $this->getQueryMock();
+        $search = $this->getSearchQueryMock();
         $ldap = new Ldap($adapter);
 
         $adapter->expects($this->once())
-                ->method('createQuery')
+                ->method('createSearchQuery')
                 ->with('dc=example,dc=org', 'objectClass=*', array('scope' => 'base'))
-                ->willReturn($query);
+                ->willReturn($search);
 
         $this->assertEquals(
-            $query,
-            $ldap->createQuery('dc=example,dc=org', 'objectClass=*', array('scope' => 'base'))
+            $search,
+            $ldap->createSearchQuery('dc=example,dc=org', 'objectClass=*', array('scope' => 'base'))
         );
+    }
+
+    public function test__createCompareQuery()
+    {
+        $adapter = $this->getAdapterMock();
+        $compare = $this->getCompareQueryMock();
+        $ldap = new Ldap($adapter);
+
+        $adapter->expects($this->once())
+                ->method('createCompareQuery')
+                ->with('uid=jsmith,ou=people,dc=example,dc=org', 'userpassword', 'secret')
+                ->willReturn($compare);
+
+        $this->assertEquals($compare, $ldap->createCompareQuery('uid=jsmith,ou=people,dc=example,dc=org', 'userpassword', 'secret'));
     }
 }
 

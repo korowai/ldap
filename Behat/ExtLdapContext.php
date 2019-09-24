@@ -159,19 +159,27 @@ class ExtLdapContext implements Context
     }
 
     /**
-     * @When I query with basedn :basedn and filter :filter
+     * @When I search with basedn :basedn and filter :filter
      */
-    public function iQueryWithBaseDnAndFilter($basedn, $filter)
+    public function iSearchWithBaseDnAndFilter($basedn, $filter)
     {
-        return $this->queryWithArgs($basedn, $filter);
+        return $this->searchWithArgs($basedn, $filter);
     }
 
     /**
-     * @When I query with basedn :basedn, filter :filter and options :options
+     * @When I search with basedn :basedn, filter :filter and options :options
      */
-    public function iQueryWithBaseDnFilterAndOptions($basedn, $filter, $options)
+    public function iSearchWithBaseDnFilterAndOptions($basedn, $filter, $options)
     {
-        return $this->queryWithArgs($basedn, $filter, $options);
+        return $this->searchWithArgs($basedn, $filter, $options);
+    }
+
+    /**
+     * @When I compare dn :dn, attribute :attribute with value :value
+     */
+    public function iCompareDnAttributeAndValue($dn, $attribute, $value)
+    {
+        return $this->compareWithArgs($dn, $attribute, $value);
     }
 
     /**
@@ -277,6 +285,22 @@ class ExtLdapContext implements Context
             }
         }
         Assert::assertEquals($expected_entries, $actual_entries);
+    }
+
+    /**
+     * @Then I should have last result true
+     */
+    public function iShouldHaveLastResultTrue()
+    {
+        Assert::isTrue($this->lastResult());
+    }
+
+    /**
+     * @Then I should have last result false
+     */
+    public function iShouldHaveLastResultFalse()
+    {
+        Assert::isFalse($this->lastResult());
     }
 }
 

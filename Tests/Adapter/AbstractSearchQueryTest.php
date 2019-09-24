@@ -1,6 +1,6 @@
 <?php
 /**
- * @file Tests/Adapter/AbstractQueryTest.php
+ * @file Tests/Adapter/AbstractSearchQueryTest.php
  *
  * This file is part of the Korowai package
  *
@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Tests\Adapter;
 
 use PHPUnit\Framework\TestCase;
-use Korowai\Lib\Ldap\Adapter\AbstractQuery;
+use Korowai\Lib\Ldap\Adapter\AbstractSearchQuery;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class AbstractQueryTest extends TestCase
+class AbstractSearchQueryTest extends TestCase
 {
     public static function getDefaultOptions()
     {
@@ -46,9 +46,9 @@ class AbstractQueryTest extends TestCase
         );
     }
 
-    private function getAbstractQueryMock($ctor = true, array $methods = array())
+    private function getAbstractSearchQueryMock($ctor = true, array $methods = array())
     {
-        $builder = $this->getMockBuilder(AbstractQuery::class);
+        $builder = $this->getMockBuilder(AbstractSearchQuery::class);
 
         if(!$ctor) {
             $builder->disableOriginalConstructor();
@@ -63,25 +63,25 @@ class AbstractQueryTest extends TestCase
         return $builder->getMockForAbstractClass();
     }
 
-    public function test_getDefaultOptions()
+    public function test__getDefaultOptions()
     {
         $expected = static::getDefaultOptions();
-        $this->assertEquals($expected, AbstractQuery::getDefaultOptions());
+        $this->assertEquals($expected, AbstractSearchQuery::getDefaultOptions());
     }
 
-    public function test_defaultOptions()
+    public function test__defaultOptions()
     {
-        $query = $this->getAbstractQueryMock(array("dc=korowai,dc=org", "objectClass=*"));
+        $query = $this->getAbstractSearchQueryMock(array("dc=korowai,dc=org", "objectClass=*"));
         $expected = static::getDefaultOptionsResolved();
         $this->assertEquals($expected, $query->getOptions());
     }
 
-    public function test_scope()
+    public function test__scope()
     {
         $scopes = array('base', 'one', 'sub');
 
         foreach($scopes as $scope) {
-            $query = $this->getAbstractQueryMock(
+            $query = $this->getAbstractSearchQueryMock(
                 array("dc=korowai,dc=org", "objectClass=*",
                 array('scope' => $scope))
             );
@@ -89,22 +89,22 @@ class AbstractQueryTest extends TestCase
         }
     }
 
-    public function test_scope_Invalid()
+    public function test__scope_Invalid()
     {
         $this->expectException(\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException::class);
         $this->expectExceptionMessage('The option "scope" with value "foo" is invalid.');
-        $query = $this->getAbstractQueryMock(
+        $query = $this->getAbstractSearchQueryMock(
             array("dc=korowai,dc=org", "objectClass=*",
             array('scope' => 'foo'))
         );
     }
 
-    public function test_deref()
+    public function test__deref()
     {
         $scopes = array('always', 'never', 'finding', 'searching');
 
         foreach($scopes as $deref) {
-            $query = $this->getAbstractQueryMock(
+            $query = $this->getAbstractSearchQueryMock(
                 array("dc=korowai,dc=org", "objectClass=*", 
                 array('deref' => $deref))
             );
@@ -112,45 +112,45 @@ class AbstractQueryTest extends TestCase
         }
     }
 
-    public function test_deref_Invalid()
+    public function test__deref_Invalid()
     {
         $this->expectException(\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException::class);
         $this->expectExceptionMessage('The option "deref" with value "foo" is invalid.');
-        $query = $this->getAbstractQueryMock(
+        $query = $this->getAbstractSearchQueryMock(
             array("dc=korowai,dc=org", "objectClass=*",
             array('deref' => 'foo'))
         );
     }
 
-    public function test_attributes()
+    public function test__attributes()
     {
-        $query = $this->getAbstractQueryMock(
+        $query = $this->getAbstractSearchQueryMock(
             array("dc=korowai,dc=org", "objectClass=*",
             array('attributes' => 'foo'))
         );
         $this->assertEquals(array('foo'), $query->getOptions()['attributes']);
     }
 
-    public function test_getBaseDn()
+    public function test__getBaseDn()
     {
-        $query = $this->getAbstractQueryMock(
+        $query = $this->getAbstractSearchQueryMock(
             array("dc=korowai,dc=org", "objectClass=*")
         );
 
         $this->assertEquals("dc=korowai,dc=org",  $query->getBaseDn());
     }
 
-    public function test_getFilter()
+    public function test__getFilter()
     {
-        $query = $this->getAbstractQueryMock(
+        $query = $this->getAbstractSearchQueryMock(
             array("dc=korowai,dc=org", "objectClass=*")
         );
         $this->assertEquals("objectClass=*",  $query->getFilter());
     }
 
-    public function test_getResult()
+    public function test__getResult()
     {
-        $query = $this->getAbstractQueryMock(
+        $query = $this->getAbstractSearchQueryMock(
             array("dc=korowai,dc=org", "objectClass=*")
         );
         $query->expects($this->once())
@@ -160,9 +160,9 @@ class AbstractQueryTest extends TestCase
         $query->getResult();
     }
 
-    public function test_execute()
+    public function test__execute()
     {
-        $query = $this->getAbstractQueryMock(
+        $query = $this->getAbstractSearchQueryMock(
             array("dc=korowai,dc=org", "objectClass=*")
         );
         $query->expects($this->exactly(2))

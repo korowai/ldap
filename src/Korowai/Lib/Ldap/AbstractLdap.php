@@ -26,7 +26,7 @@ use \InvalidArgumentException;
 abstract class AbstractLdap implements LdapInterface
 {
     /**
-     * Create query, execute and return its result
+     * Create search query, execute and return its result
      *
      * @param string $base_dn
      * @param string $filter
@@ -36,7 +36,21 @@ abstract class AbstractLdap implements LdapInterface
      */
     public function query(string $base_dn, string $filter, array $options = array()) : ResultInterface
     {
-        return $this->createQuery($base_dn, $filter, $options)->getResult();
+        return $this->createSearchQuery($base_dn, $filter, $options)->getResult();
+    }
+
+    /**
+     * Create compare query, execute and return its result
+     *
+     * @param string $dn
+     * @param string $attribute
+     * @param string $value
+     *
+     * @return bool Result of the comparison
+     */
+    public function compare(string $dn, string $attribute, string $value) : bool
+    {
+        return $this->createCompareQuery($dn, $attribute, $value)->getResult();
     }
 }
 
