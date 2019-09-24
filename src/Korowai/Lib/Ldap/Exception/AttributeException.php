@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Exception/AttributeException.php
+ * @file src/Korowai/Lib/Ldap/Exception/AttributeException.php
  *
  * This file is part of the Korowai package
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Adapter/ResultAttributeIteratorInterface.php
+ * @file src/Korowai/Lib/Ldap/Adapter/ResultAttributeIteratorInterface.php
  *
  * This file is part of the Korowai package
  *

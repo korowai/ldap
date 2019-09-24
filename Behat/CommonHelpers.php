@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Behat/CommonHelpers.php
+ * @file Behat/CommonHelpers.php
  *
  * This file is part of the Korowai package
  *

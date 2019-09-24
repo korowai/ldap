@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Adapter/AbstractAdapterFactory.php
+ * @file src/Korowai/Lib/Ldap/Adapter/AbstractAdapterFactory.php
  *
  * This file is part of the Korowai package
  *

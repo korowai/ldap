@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Behat/ExtLdapContext.php
+ * @file Behat/ExtLdapContext.php
  *
  * This file is part of the Korowai package
  *

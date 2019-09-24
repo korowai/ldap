@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Tests/Adapter/AbstractQueryTest.php
+ * @file Tests/Adapter/AbstractQueryTest.php
  *
  * This file is part of the Korowai package
  *

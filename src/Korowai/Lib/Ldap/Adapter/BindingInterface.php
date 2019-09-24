@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Adapter/BindingInterface.php
+ * @file src/Korowai/Lib/Ldap/Adapter/BindingInterface.php
  *
  * This file is part of the Korowai package
  *

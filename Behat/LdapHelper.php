@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Behat/LdapHelper.php
+ * @file Behat/LdapHelper.php
  *
  * This file is part of the Korowai package
  *

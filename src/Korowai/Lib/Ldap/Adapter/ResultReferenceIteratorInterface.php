@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Adapter/ResultReferenceIteratorInterface.php
+ * @file src/Korowai/Lib/Ldap/Adapter/ResultReferenceIteratorInterface.php
  *
  * This file is part of the Korowai package
  *

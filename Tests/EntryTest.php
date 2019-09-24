@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Tests/EntryTest.php
+ * @file Tests/EntryTest.php
  *
  * This file is part of the Korowai package
  *

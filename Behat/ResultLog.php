@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Behat/ResultLog.php
+ * @file Behat/ResultLog.php
  *
  * This file is part of the Korowai package
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Behat/ExceptionLog.php
+ * @file Behat/ExceptionLog.php
  *
  * This file is part of the Korowai package
  *

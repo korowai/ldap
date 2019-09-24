@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Adapter/AdapterInterface.php
+ * @file src/Korowai/Lib/Ldap/Adapter/AdapterInterface.php
  *
  * This file is part of the Korowai package
  *

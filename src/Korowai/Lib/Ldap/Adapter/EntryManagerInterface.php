@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Adapter/EntryManagerInterface.php
+ * @file src/Korowai/Lib/Ldap/Adapter/EntryManagerInterface.php
  *
  * This file is part of the Korowai package
  *

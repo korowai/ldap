@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Entry.php
+ * @file src/Korowai/Lib/Ldap/Entry.php
  *
  * This file is part of the Korowai package
  *

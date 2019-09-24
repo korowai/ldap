@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Adapter/ExtLdap/EnsureLdapLink.php
+ * @file src/Korowai/Lib/Ldap/Adapter/ExtLdap/EnsureLdapLink.php
  *
  * This file is part of the Korowai package
  *

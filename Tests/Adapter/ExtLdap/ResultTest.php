@@ -1,6 +1,6 @@
 <?php
 /**
- * @file packages/ldaplib/Tests/Adapter/ExtLdap/ResultTest.php
+ * @file Tests/Adapter/ExtLdap/ResultTest.php
  *
  * This file is part of the Korowai package
  *
