@@ -225,6 +225,21 @@ class ResultTest extends TestCase
         $this->assertNull($iter->getEntry());
     }
 
+    public function test__getResultEntryIterator__FalseFirstEntry()
+    {
+        $link = $this->createMock(LdapLink::class);
+        $result = new Result('ldap result', $link);
+
+        $link->expects($this->once())
+             ->method('first_entry')
+             ->with($result)
+             ->willReturn(false);
+
+        $iter = $result->getResultEntryIterator();
+        $this->assertSame($result, $iter->getResult());
+        $this->assertNull($iter->getEntry());
+    }
+
     public function test__getResultReferenceIterator()
     {
         $link = $this->createMock(LdapLink::class);
@@ -250,6 +265,21 @@ class ResultTest extends TestCase
              ->method('first_reference')
              ->with($result)
              ->willReturn(null);
+
+        $iter = $result->getResultReferenceIterator();
+        $this->assertSame($result, $iter->getResult());
+        $this->assertNull($iter->getReference());
+    }
+
+    public function test__getResultReferenceIterator__FalseFirstReference()
+    {
+        $link = $this->createMock(LdapLink::class);
+        $result = new Result('ldap result', $link);
+
+        $link->expects($this->once())
+             ->method('first_reference')
+             ->with($result)
+             ->willReturn(false);
 
         $iter = $result->getResultReferenceIterator();
         $this->assertSame($result, $iter->getResult());

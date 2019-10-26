@@ -187,7 +187,8 @@ class Result extends AbstractResult
      */
     public function getResultEntryIterator() : ResultEntryIteratorInterface
     {
-        return new ResultEntryIterator($this, $this->first_entry());
+        $first = $this->first_entry();
+        return new ResultEntryIterator($this, $first === false ? null : $first);
     }
 
     /**
@@ -195,7 +196,8 @@ class Result extends AbstractResult
      */
     public function getResultReferenceIterator() : ResultReferenceIteratorInterface
     {
-        return new ResultReferenceIterator($this, $this->first_reference());
+        $first = $this->first_reference();
+        return new ResultReferenceIterator($this, $first === false ? null : $first);
     }
 }
 
