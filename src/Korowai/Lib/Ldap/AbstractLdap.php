@@ -33,7 +33,7 @@ abstract class AbstractLdap implements LdapInterface
      *
      * @return ResultInterface Query result
      */
-    public function query(string $base_dn, string $filter, array $options = array()) : ResultInterface
+    public function search(string $base_dn, string $filter, array $options = array()) : ResultInterface
     {
         return $this->createSearchQuery($base_dn, $filter, $options)->getResult();
     }

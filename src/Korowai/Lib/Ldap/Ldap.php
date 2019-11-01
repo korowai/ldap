@@ -42,6 +42,7 @@ class Ldap extends AbstractLdap
      * @param array $config
      * @param string $factoryClass
      *
+     * @return Ldap
      * @throws InvalidArgumentException
      */
     public static function createWithConfig(array $config = array(), string $factoryClass = null)
@@ -56,10 +57,16 @@ class Ldap extends AbstractLdap
         return static::createWithAdapterFactory($factory);
     }
 
+    /**
+     * Returns new Ldap instance with adapter created by *$factory*.
+     *
+     * @param  AdapterFactoryInterface $factory
+     * @return Ldap
+     */
     public static function createWithAdapterFactory(AdapterFactoryInterface $factory)
     {
         $adapter = $factory->createAdapter();
-        return new Ldap($adapter);
+        return new static($adapter);
     }
 
     /**

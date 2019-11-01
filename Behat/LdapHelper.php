@@ -50,7 +50,7 @@ trait LdapHelper
     protected function searchWithArgs(...$args)
     {
         try {
-            $result = $this->ldap->query(...$args);
+            $result = $this->ldap->search(...$args);
         } catch (\Exception $e) {
             $this->appendException($e);
             return false;

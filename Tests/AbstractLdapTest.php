@@ -31,7 +31,7 @@ class AbstractLdapTest extends TestCase
         $this->assertContains(LdapInterface::class, $interfaces);
     }
 
-    public function test__query()
+    public function test__search()
     {
         $result = $this->getMockBuilder(ResultInterface::class)
                        ->getMockForAbstractClass();
@@ -55,7 +55,7 @@ class AbstractLdapTest extends TestCase
              ->with(...$args)
              ->willReturn($query);
 
-        $this->assertSame($result, $ldap->query(...$args));
+        $this->assertSame($result, $ldap->search(...$args));
     }
 
     public function test__compare()
