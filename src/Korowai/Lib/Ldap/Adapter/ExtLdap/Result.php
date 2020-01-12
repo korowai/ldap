@@ -24,7 +24,9 @@ use Korowai\Lib\Ldap\Adapter\ResultReferenceIteratorInterface;
  */
 class Result extends AbstractResult
 {
+    /** @var resource */
     private $result;
+    /** @var LdapLink */
     private $link;
 
     public static function isLdapResultResource($arg) : bool

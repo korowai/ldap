@@ -23,9 +23,11 @@ use Korowai\Lib\Ldap\Adapter\ResultAttributeIteratorInterface;
  */
 class ResultEntry extends AbstractResultEntry
 {
-    /** @var ResultEntry */
+    /** @var resource */
     private $entry;
+    /** @var Result */
     private $result;
+    /** @var ResultAttributeIterator */
     private $iterator;
 
     /**
