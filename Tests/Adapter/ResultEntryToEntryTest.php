@@ -1,6 +1,6 @@
 <?php
 /**
- * @file Tests/Adapter/AbstractResultEntryTest.php
+ * @file Tests/Adapter/ResultEntryToEntryTest.php
  *
  * This file is part of the Korowai package
  *
@@ -14,17 +14,17 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Tests\Adapter;
 
 use PHPUnit\Framework\TestCase;
-use Korowai\Lib\Ldap\Adapter\AbstractResultEntry;
+use Korowai\Lib\Ldap\Adapter\ResultEntryToEntry;
 use Korowai\Lib\Ldap\Entry;
 
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class AbstractResultEntryTest extends TestCase
+class ResultEntryToEntryTest extends TestCase
 {
-    private function getAbstractResultEntryMock($ctor = true, array $methods = array())
+    private function getResultEntryToEntryMock($ctor = true, array $methods = array())
     {
-        $builder = $this->getMockBuilder(AbstractResultEntry::class);
+        $builder = $this->getMockBuilder(ResultEntryToEntry::class);
 
         if(!$ctor) {
             $builder->disableOriginalConstructor();
@@ -38,7 +38,7 @@ class AbstractResultEntryTest extends TestCase
             }
         }
         $builder->setMethods($methods);
-        return $builder->getMockForAbstractClass();
+        return $builder->getMockForTrait();
     }
 
     public function test__toEntry()
@@ -50,7 +50,7 @@ class AbstractResultEntryTest extends TestCase
             'sn' => array('Smith')
         );
 
-        $abstract= $this->getAbstractResultEntryMock();
+        $abstract= $this->getResultEntryToEntryMock();
         $abstract->expects($this->once())
                  ->method('getDn')
                  ->with()

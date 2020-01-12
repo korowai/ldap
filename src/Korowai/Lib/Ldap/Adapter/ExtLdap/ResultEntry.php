@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
 
-use Korowai\Lib\Ldap\Adapter\AbstractResultEntry;
+use Korowai\Lib\Ldap\Adapter\ResultEntryToEntry;
+use Korowai\Lib\Ldap\Adapter\ResultEntryInterface;
 use Korowai\Lib\Ldap\Adapter\ResultAttributeIteratorInterface;
 
 /**
@@ -21,12 +22,10 @@ use Korowai\Lib\Ldap\Adapter\ResultAttributeIteratorInterface;
  *
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class ResultEntry extends AbstractResultEntry
+class ResultEntry extends ResultRecord implements ResultEntryInterface
 {
-    /** @var resource */
-    private $entry;
-    /** @var Result */
-    private $result;
+    use ResultEntryToEntry;
+
     /** @var ResultAttributeIterator */
     private $iterator;
 
@@ -38,28 +37,7 @@ class ResultEntry extends AbstractResultEntry
      */
     public function __construct($entry, Result $result)
     {
-        $this->entry = $entry;
-        $this->result= $result;
-    }
-
-    /**
-     * Return the underlying resource identifier.
-     *
-     * @return resource
-     */
-    public function getResource()
-    {
-        return $this->entry;
-    }
-
-    /**
-     * Return the Result object which contains the entry.
-     *
-     * @return resource
-     */
-    public function getResult()
-    {
-        return $this->result;
+        $this->initResultRecord($entry, $result);
     }
 
     // @codingStandardsIgnoreStart
@@ -72,7 +50,7 @@ class ResultEntry extends AbstractResultEntry
      */
     public function first_attribute()
     {
-        return $this->result->getLink()->first_attribute($this);
+        return $this->getResult()->getLink()->first_attribute($this);
     }
 
     /**
@@ -82,17 +60,7 @@ class ResultEntry extends AbstractResultEntry
      */
     public function get_attributes()
     {
-        return $this->result->getLink()->get_attributes($this);
-    }
-
-    /**
-     * Get the DN of a result entry
-     *
-     * @link http://php.net/manual/en/function.ldap-get-dn.php ldap_get_dn()
-     */
-    public function get_dn()
-    {
-        return $this->result->getLink()->get_dn($this);
+        return $this->getResult()->getLink()->get_attributes($this);
     }
 
     /**
@@ -102,7 +70,7 @@ class ResultEntry extends AbstractResultEntry
      */
     public function get_values_len(string $attribute)
     {
-        return $this->result->getLink()->get_values_len($this, $attribute);
+        return $this->getResult()->getLink()->get_values_len($this, $attribute);
     }
 
     /**
@@ -112,7 +80,7 @@ class ResultEntry extends AbstractResultEntry
      */
     public function get_values($attribute)
     {
-        return $this->result->getLink()->get_values($this, $attribute);
+        return $this->getResult()->getLink()->get_values($this, $attribute);
     }
 
     /**
@@ -122,7 +90,7 @@ class ResultEntry extends AbstractResultEntry
      */
     public function next_attribute()
     {
-        return $this->result->getLink()->next_attribute($this);
+        return $this->getResult()->getLink()->next_attribute($this);
     }
 
     /**
@@ -132,7 +100,7 @@ class ResultEntry extends AbstractResultEntry
      */
     public function next_entry()
     {
-        return $this->result->getLink()->next_entry($this);
+        return $this->getResult()->getLink()->next_entry($this);
     }
 
     // phpcs:enable Generic.NamingConventions.CamelCapsFunctionName
@@ -151,15 +119,6 @@ class ResultEntry extends AbstractResultEntry
             $this->iterator = new ResultAttributeIterator($this, $first);
         }
         return $this->iterator;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDn() : string
-    {
-        return $this->get_dn();
     }
 
     /**

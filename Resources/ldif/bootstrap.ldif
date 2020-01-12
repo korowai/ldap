@@ -42,10 +42,36 @@ objectClass: organization
 dc: subtree
 o: Subtree, Example Org.
 
+dn: ou=people,dc=subtree,dc=example,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+# uid=gbrown,ou=people,dc=example,dc=org
+dn: uid=gbrown,ou=people,dc=subtree,dc=example,dc=org
+uid: gbrown
+uidNumber: 6789
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: shadowAccount
+objectClass: posixAccount
+cn: George Brown
+displayName: George Brown
+gecos: George Brown,,,
+gidNumber: 6000
+givenName: George
+sn: Brown
+homeDirectory: /home/gbrown
+initials: G. B
+loginShell: /bin/bash
+mail: gbrown@example.org
+roomNumber: 114
+telephoneNumber: +12 34 567 8908
+userPassword: secret
+
 # referral
-dn: dc=foreign,dc=example,dc=org
+dn: cn=foreign,dc=example,dc=org
 objectClass: referral
 objectClass: extensibleObject
-dc: foreign
-uid: blabla
+cn: foreign
 ref: ldap://ldap-service/dc=subtree,dc=example,dc=org

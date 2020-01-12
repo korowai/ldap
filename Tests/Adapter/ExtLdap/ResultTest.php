@@ -22,6 +22,7 @@ use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntry;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultReference;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntryIterator;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultReferenceIterator;
+use Korowai\Lib\Ldap\Adapter\ResultInterface;
 
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
@@ -33,6 +34,12 @@ class ResultTest extends TestCase
     public function getLdapFunctionMock(...$args)
     {
         return $this->getFunctionMock('\\Korowai\\Lib\\Ldap\\Adapter\ExtLdap', ...$args);
+    }
+
+    public function test__implements__ResultInterface()
+    {
+        $interfaces = class_implements(Result::class);
+        $this->assertContains(ResultInterface::class, $interfaces);
     }
 
     public function test__getResource()
@@ -51,6 +58,7 @@ class ResultTest extends TestCase
 
     public function test__control_paged_result_response()
     {
+        // Phake handles callbacks with variadic parameters passed by reference.
         $link = Phake::mock(LdapLink::class);
         $result = new Result('ldap result', $link);
 
@@ -153,6 +161,7 @@ class ResultTest extends TestCase
 
     public function test__parse_result()
     {
+        // Phake handles callbacks with variadic parameters passed by reference.
         $link = Phake::mock(LdapLink::class);
         $result = new Result('ldap result', $link);
 

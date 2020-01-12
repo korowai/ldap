@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Korowai\Lib\Ldap\Tests\Adapter;
+namespace Korowai\Lib\Ldap\Tests\Adapter\ExtLdap;
 
 use PHPUnit\Framework\TestCase;
-use \Phake;
 
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntryIterator;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntry;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
+use Korowai\Lib\Ldap\Adapter\ResultEntryIteratorInterface;
 
 
 /**
@@ -26,7 +26,13 @@ use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
  */
 class ResultEntryIteratorTest extends TestCase
 {
-    public function test_getResult()
+    public function test__implements__ResultEntryIteratorInterface()
+    {
+        $interfaces = class_implements(ResultEntryIterator::class);
+        $this->assertContains(ResultEntryIteratorInterface::class, $interfaces);
+    }
+
+    public function test__getResult()
     {
         $result = $this->createMock(Result::class);
         $entry = $this->createMock(ResultEntry::class);
@@ -34,7 +40,7 @@ class ResultEntryIteratorTest extends TestCase
         $this->assertSame($result, $iterator->getResult());
     }
 
-    public function test_getEntry()
+    public function test__getEntry()
     {
         $result = $this->createMock(Result::class);
         $entry = $this->createMock(ResultEntry::class);
@@ -42,7 +48,7 @@ class ResultEntryIteratorTest extends TestCase
         $this->assertSame($entry, $iterator->getEntry());
     }
 
-    public function test_current()
+    public function test__current()
     {
         $result = $this->createMock(Result::class);
         $entry = $this->createMock(ResultEntry::class);
@@ -50,7 +56,7 @@ class ResultEntryIteratorTest extends TestCase
         $this->assertSame($entry, $iterator->current());
     }
 
-    public function test_key()
+    public function test__key()
     {
         $result = $this->createMock(Result::class);
         $entry = $this->createMock(ResultEntry::class);
@@ -64,7 +70,7 @@ class ResultEntryIteratorTest extends TestCase
         $this->assertEquals('dc=korowai,dc=org', $iterator->key());
     }
 
-    public function test_next()
+    public function test__next()
     {
         $result = $this->createMock(Result::class);
         $entry1 = $this->createMock(ResultEntry::class);
@@ -86,7 +92,7 @@ class ResultEntryIteratorTest extends TestCase
         $this->assertNull($iterator->getEntry());
     }
 
-    public function test_rewind()
+    public function test__rewind()
     {
         $result = $this->createMock(Result::class);
         $entry1 = $this->createMock(ResultEntry::class);
@@ -105,7 +111,7 @@ class ResultEntryIteratorTest extends TestCase
         $this->assertSame($entry1, $iterator->getEntry());
     }
 
-    public function test_valid()
+    public function test__valid()
     {
         $result = $this->createMock(Result::class);
         $entry1 = $this->createMock(ResultEntry::class);

@@ -11,15 +11,15 @@
 
 declare(strict_types=1);
 
-namespace Korowai\Lib\Ldap\Tests\Adapter;
+namespace Korowai\Lib\Ldap\Tests\Adapter\ExtLdap;
 
 use PHPUnit\Framework\TestCase;
-use \Phake;
 
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntry;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultAttributeIterator;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
+use Korowai\Lib\Ldap\Adapter\ResultEntryInterface;
 
 
 /**
@@ -38,6 +38,12 @@ class ResultEntryTest extends TestCase
                    ->willReturn($link);
         }
         return $result;
+    }
+
+    public function test__implements__ResultEntryInterface()
+    {
+        $interfaces = class_implements(ResultEntry::class);
+        $this->assertContains(ResultEntryInterface::class, $interfaces);
     }
 
     public function test_getResource()
@@ -222,7 +228,7 @@ class ResultEntryTest extends TestCase
         $this->assertInstanceOf(ResultAttributeIterator::class, $iterator);
 
         $this->assertSame($entry, $iterator->getEntry());
-        $this->assertEquals('first attribute', $iterator->getAttribute());
+        $this->assertEquals('first attribute', $iterator->key());
 
         $result->getLink()
                ->method('next_attribute')
@@ -234,7 +240,7 @@ class ResultEntryTest extends TestCase
         // single iterator instance per ResultEntry (dictated by ext-ldap implementation)
         $iterator2 = $entry->getAttributeIterator();
         $this->assertSame($iterator, $iterator2);
-        $this->assertEquals('second attribute', $iterator->getAttribute());
+        $this->assertEquals('second attribute', $iterator->key());
     }
 
 }

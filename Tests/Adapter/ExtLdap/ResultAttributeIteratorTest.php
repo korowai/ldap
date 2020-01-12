@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Korowai\Lib\Ldap\Tests\Adapter;
+namespace Korowai\Lib\Ldap\Tests\Adapter\ExtLdap;
 
 use PHPUnit\Framework\TestCase;
-use \Phake;
 
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultAttributeIterator;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultEntry;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
+use Korowai\Lib\Ldap\Adapter\ResultAttributeIteratorInterface;
 
 
 /**
@@ -26,21 +26,20 @@ use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
  */
 class ResultAttributeIteratorTest extends TestCase
 {
-    public function test_getEntry()
+    public function test__implements__ResultAttributeIteratorInterface()
+    {
+        $interfaces = class_implements(ResultAttributeIterator::class);
+        $this->assertContains(ResultAttributeIteratorInterface::class, $interfaces);
+    }
+
+    public function test__getEntry()
     {
         $entry = $this->createMock(ResultEntry::class);
         $iterator = new ResultAttributeIterator($entry, 'attribName');
         $this->assertSame($entry, $iterator->getEntry());
     }
 
-    public function test_getAttribute()
-    {
-        $entry = $this->createMock(ResultEntry::class);
-        $iterator = new ResultAttributeIterator($entry, 'attribName');
-        $this->assertEquals('attribname', $iterator->getAttribute());
-    }
-
-    public function test_current()
+    public function test__current()
     {
         $values = array('val1', 'val2', 'count' => 2);
         $entry = $this->createMock(ResultEntry::class);
@@ -52,14 +51,14 @@ class ResultAttributeIteratorTest extends TestCase
         $this->assertSame($values, $iterator->current());
     }
 
-    public function test_key()
+    public function test__key()
     {
         $entry = $this->createMock(ResultEntry::class);
         $iterator = new ResultAttributeIterator($entry, 'attribName');
         $this->assertEquals('attribname', $iterator->key());
     }
 
-    public function test_next()
+    public function test__next()
     {
         $entry = $this->createMock(ResultEntry::class);
         $iterator = new ResultAttributeIterator($entry, 'firstAttribute');
@@ -71,12 +70,12 @@ class ResultAttributeIteratorTest extends TestCase
               ->with()
               ->willReturn('secondAttribute');
 
-        $this->assertEquals('firstattribute', $iterator->getAttribute());
+        $this->assertEquals('firstattribute', $iterator->key());
         $iterator->next();
-        $this->assertEquals('secondattribute', $iterator->getAttribute());
+        $this->assertEquals('secondattribute', $iterator->key());
     }
 
-    public function test_rewind()
+    public function test__rewind()
     {
         $entry = $this->createMock(ResultEntry::class);
         $iterator = new ResultAttributeIterator($entry, 'secondAttribute');
@@ -91,7 +90,7 @@ class ResultAttributeIteratorTest extends TestCase
         $this->assertEquals('firstattribute', $iterator->key());
     }
 
-    public function test_valid()
+    public function test__valid()
     {
         $entry = $this->createMock(ResultEntry::class);
         $iterator = new ResultAttributeIterator($entry, 'firstAttribute');

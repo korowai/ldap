@@ -341,13 +341,13 @@ class LdapLink
     /**
      * Get the DN of a result entry
      *
-     * @param ResultEntry $result_entry
+     * @param ResultEntry $result_record
      *
      * @link http://php.net/manual/en/function.ldap-get-dn.php ldap_get_dn()
      */
-    public function get_dn(ResultEntry $result_entry)
+    public function get_dn(ResultRecord $result_record)
     {
-        return @ldap_get_dn($this->link, $result_entry->getResource());
+        return @ldap_get_dn($this->link, $result_record->getResource());
     }
 
     /**

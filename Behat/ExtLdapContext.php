@@ -288,6 +288,21 @@ class ExtLdapContext implements Context
     }
 
     /**
+     * @Then I should have last result references
+     */
+    public function iShouldHaveLastResultReferences(PyStringNode $pystring)
+    {
+        $expected_references = $this->decodeJsonPyStringNode($pystring);
+        $actual_references = array_map(
+            function ($e) {
+                return $e->getReferrals();
+            },
+            iterator_to_array($this->lastResult()->getResultReferenceIterator())
+        );
+        Assert::assertEquals($expected_references, $actual_references);
+    }
+
+    /**
      * @Then I should have last result true
      */
     public function iShouldHaveLastResultTrue()

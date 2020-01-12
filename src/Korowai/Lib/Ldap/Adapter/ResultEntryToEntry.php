@@ -1,6 +1,6 @@
 <?php
 /**
- * @file src/Korowai/Lib/Ldap/Adapter/AbstractResultEntry.php
+ * @file src/Korowai/Lib/Ldap/Adapter/ResultEntryToEntry.php
  *
  * This file is part of the Korowai package
  *
@@ -19,7 +19,7 @@ use Korowai\Lib\Ldap\EntryInterface;
 /**
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-abstract class AbstractResultEntry implements ResultEntryInterface
+trait ResultEntryToEntry
 {
     /**
      * {@inheritdoc}
@@ -28,6 +28,9 @@ abstract class AbstractResultEntry implements ResultEntryInterface
     {
         return new Entry($this->getDn(), $this->getAttributes());
     }
+
+    public abstract function getDn() : string;
+    public abstract function getAttributes() : array;
 }
 
 // vim: syntax=php sw=4 ts=4 et:

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file src/Korowai/Lib/Ldap/Adapter/ExtLdap/ResultAttributeIterator.php
+ * @file src/Korowai/Lib/Ldap/Adapter/Mock/ResultAttributeIterator.php
  *
  * This file is part of the Korowai package
  *
@@ -11,25 +11,17 @@
 
 declare(strict_types=1);
 
-namespace Korowai\Lib\Ldap\Adapter\ExtLdap;
+namespace Korowai\Lib\Ldap\Adapter\Mock;
 
 use Korowai\Lib\Ldap\Adapter\ResultAttributeIteratorInterface;
 
 /**
- * Iterates through an ldap result entry attributes.
+ * Iterates through attributes of a result entry.
  *
  * Only one instance of ``ResultAttributeIterator`` should be used for a given
  * ``ResultEntry``. The internal state (position) of the iterator is
- * keept and managed by the ``"ldap entry"`` resource (encapsulated by our
- * ``ResultEntry`` object which is provided as ``$entry`` argument to
- * ``ResultAttributeIterator::__construct()``). This is a consequence of how
- * PHP ldap extension implements attribute iteration &mdash; the ``berptr``
- * argument to ``libldap`` functions
- * [ldap_first_attribute (3)](https://manpages.debian.org/stretch-backports/libldap2-dev/ldap_first_attribute.3.en.html)
- * and
- * [ldap_next_attribute (3)](https://manpages.debian.org/stretch-backports/libldap2-dev/ldap_next_attribute.3.en.html)
- * is stored by PHP ldap extension in an ``"ldap entry"`` resource and is
- * inaccessible for user.
+ * keept and managed by the ``ResultEntry`` (provided as ``$entry`` argument to
+ * ``ResultAttributeIterator::__construct()``).
  *
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
@@ -38,23 +30,14 @@ class ResultAttributeIterator implements ResultAttributeIteratorInterface
     /** @var ResultEntry */
     private $entry;
 
-    /** @var string */
-    private $attribute;
-
     /**
      * Initializes the ``ResultAttributeIterator``.
      *
-     * The ``$attribute`` should be a valid attribute name returned by either
-     * ``$entry->first_attribute()`` or ``$entry->next_attribute()`` or
-     * it should be null.
-     *
-     * @param ResultEntry $entry An ldap entry containing the attributes
-     * @param string|null $attribute Name of the current attribute pointed to by Iterator
+     * @param ResultEntry $entry An entry containing the attributes.
      */
-    public function __construct(ResultEntry $entry, $attribute)
+    public function __construct(ResultEntry $entry)
     {
         $this->entry = $entry;
-        $this->attribute = is_string($attribute) ? strtolower($attribute) : $attribute;
     }
 
     /**
@@ -76,7 +59,7 @@ class ResultAttributeIterator implements ResultAttributeIteratorInterface
      */
     public function current()
     {
-        return $this->entry->get_values($this->attribute);
+        return $this->entry->attributes_current();
     }
 
     /**
@@ -88,7 +71,8 @@ class ResultAttributeIterator implements ResultAttributeIteratorInterface
      */
     public function key()
     {
-        return $this->attribute;
+        $key = $this->entry->attributes_key();
+        return is_string($key) ? strtolower($key) : $key;
     }
 
     /**
@@ -98,8 +82,7 @@ class ResultAttributeIterator implements ResultAttributeIteratorInterface
      */
     public function next()
     {
-        $next = $this->entry->next_attribute();
-        $this->attribute = is_string($next) ? strtolower($next) : $next;
+        $this->entry->attributes_next();
     }
 
     /**
@@ -109,8 +92,7 @@ class ResultAttributeIterator implements ResultAttributeIteratorInterface
      */
     public function rewind()
     {
-        $first = $this->entry->first_attribute();
-        $this->attribute = is_string($first) ? strtolower($first) : $first;
+        $this->entry->attributes_reset();
     }
 
     /**
@@ -120,7 +102,7 @@ class ResultAttributeIterator implements ResultAttributeIteratorInterface
      */
     public function valid()
     {
-        return is_string($this->attribute);
+        return $this->entry->attributes_key() !== null;
     }
 }
 

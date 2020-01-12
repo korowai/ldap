@@ -11,14 +11,17 @@
 
 declare(strict_types=1);
 
-namespace Korowai\Lib\Ldap\Tests\Adapter;
+namespace Korowai\Lib\Ldap\Tests\Adapter\ExtLdap;
 
 use PHPUnit\Framework\TestCase;
-use \Phake;
 
 use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultReference;
+use Korowai\Lib\Ldap\Adapter\ExtLdap\ResultReferralIterator;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Result;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
+use Korowai\Lib\Ldap\Adapter\ResultReferenceInterface;
+use Korowai\Lib\Ldap\Adapter\ReferralsIterationInterface;
+use Korowai\Lib\Ldap\Exception\LdapException;
 
 
 /**
@@ -36,21 +39,45 @@ class ResultReferenceTest extends TestCase
         return $result;
     }
 
-    public function test_getResource()
+    public function test__implements__ResultReferenceInterface()
+    {
+        $interfaces = class_implements(ResultReference::class);
+        $this->assertContains(ResultReferenceInterface::class, $interfaces);
+    }
+
+    public function test__implements__ResultReferralArrayIterationInterface()
+    {
+        $interfaces = class_implements(ResultReference::class);
+        $this->assertContains(ReferralsIterationInterface::class, $interfaces);
+    }
+
+    public function test__getResource()
     {
         $result = $this->getResultMock();
         $ref = new ResultReference('ldap reference', $result);
         $this->assertSame('ldap reference', $ref->getResource());
     }
 
-    public function test_getResult()
+    public function test__getResult()
     {
         $result = $this->getResultMock();
         $ref = new ResultReference('ldap reference', $result);
         $this->assertSame($result, $ref->getResult());
     }
 
-    public function test_next_reference()
+    public function test__getReferralIterator()
+    {
+        $result = $this->getResultMock();
+        $ref = new ResultReference('ldap reference', $result);
+
+        $iterator1 = $ref->getReferralIterator();
+        $this->assertInstanceOf(ResultReferralIterator::class, $iterator1);
+
+        $iterator2 = $ref->getReferralIterator();
+        $this->assertSame($iterator1, $iterator2);
+    }
+
+    public function test__next_reference()
     {
         $link = $this->createMock(LdapLink::class);
         $result = $this->getResultMock($link);
@@ -65,66 +92,101 @@ class ResultReferenceTest extends TestCase
         $this->assertSame('next reference', $ref->next_reference());
     }
 
-    public function test_parse_reference()
+    public function test__parse_reference()
     {
-        $link = Phake::mock(LdapLink::class);
+        $link = $this->createMock(LdapLink::class);
         $result = $this->getResultMock($link);
 
         $ref = new ResultReference('ldap reference', $result);
 
         $callback = function ($ref, &$referrals) {
-            $referrals = array('Referrals');
+            $referrals = ['A'];
             return 'ok';
         };
 
-        Phake::when($link)->parse_reference(
-            $this->isInstanceOf(ResultReference::class),
-            Phake::ignoreRemaining()
-        )->thenReturnCallback($callback);
+        $link->expects($this->once())
+             ->method('parse_reference')
+             ->with($this->identicalTo($ref), $this->anything())
+             ->will($this->returnCallback($callback));
 
         $this->assertSame('ok', $ref->parse_reference($referrals));
-
-        Phake::verify($link, Phake::times(1))->parse_reference(
-            $this->identicalTo($ref),
-            Phake::ignoreRemaining()
-        );
-
-        $this->assertSame(array('Referrals'), $referrals);
+        $this->assertSame(['A'], $referrals);
     }
 
-    public function test_getReferrals_Failure()
+    public function test__getReferrals__Failure()
     {
-        $link = Phake::mock(LdapLink::class);
+        $link = $this->createMock(LdapLink::class);
         $result = $this->getResultMock($link);
 
         $ref = new ResultReference('ldap reference', $result);
 
-        Phake::when($link)->parse_reference(
-            $this->isInstanceOf(ResultReference::class),
-            Phake::ignoreRemaining()
-        )->thenReturn(false);
+        $link->expects($this->once())
+             ->method('parse_reference')
+             ->with($this->identicalTo($ref), $this->anything())
+             ->willReturn(false);
+        $link->expects($this->once())
+             ->method('errno')
+             ->willReturn(0x54);
 
-        $this->assertFalse($ref->getReferrals());
+        $this->expectException(LdapException::class);
+        $this->expectExceptionCode(0x54);
+
+        $ref->getReferrals();
     }
 
-    public function test_getReferrals_Success()
+    public function test__getReferrals__Success()
     {
-        $link = Phake::mock(LdapLink::class);
+        $link = $this->createMock(LdapLink::class);
         $result = $this->getResultMock($link);
 
         $ref = new ResultReference('ldap reference', $result);
 
         $callback = function ($ref, &$referrals) {
-            $referrals = array('Referrals');
+            $referrals = ['A'];
             return true;
         };
 
-        Phake::when($link)->parse_reference(
-            $this->isInstanceOf(ResultReference::class),
-            Phake::ignoreRemaining()
-        )->thenReturnCallback($callback);
+        $link->expects($this->once())
+             ->method('parse_reference')
+             ->with($this->identicalTo($ref), $this->anything())
+             ->will($this->returnCallback($callback));
 
-        $this->assertSame(array('Referrals'), $ref->getReferrals());
+        $this->assertSame(['A'], $ref->getReferrals());
+    }
+
+    public function test__referrals__iteration()
+    {
+        $link = $this->createMock(LdapLink::class);
+        $result = $this->getResultMock($link);
+
+        $ref = new ResultReference('ldap reference', $result);
+
+        $callback = function ($ref, &$referrals) {
+            $referrals = ['A', 'B'];
+            return true;
+        };
+
+        $link->expects($this->once())
+             ->method('parse_reference')
+             ->with($this->identicalTo($ref), $this->anything())
+             ->will($this->returnCallback($callback));
+
+        $this->assertSame(0, $ref->referrals_key());
+        $this->assertSame('A', $ref->referrals_current());
+
+        $this->assertSame('B', $ref->referrals_next());
+
+        $this->assertSame(1, $ref->referrals_key());
+        $this->assertSame('B', $ref->referrals_current());
+
+        $this->assertFalse($ref->referrals_next());
+        $this->assertNull($ref->referrals_key());
+        $this->assertFalse($ref->referrals_current());
+
+        $ref->referrals_reset();
+
+        $this->assertSame(0, $ref->referrals_key());
+        $this->assertSame('A', $ref->referrals_current());
     }
 }
 

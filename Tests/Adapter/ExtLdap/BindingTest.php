@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Tests\Adapter\ExtLdap;
 
 use PHPUnit\Framework\TestCase;
-use \Phake;
 
 use Korowai\Lib\Ldap\Adapter\ExtLdap\Binding;
 use Korowai\Lib\Ldap\Adapter\ExtLdap\LdapLink;
@@ -46,28 +45,28 @@ class BindingTest extends TestCase
         return $link;
     }
 
-    public function test_construct()
+    public function test__construct()
     {
         $link = $this->createLdapLinkMock(null);
         $bind = new Binding($link);
         $this->assertTrue(true); // haven't blowed up
     }
 
-    public function test_getLink()
+    public function test__getLink()
     {
         $link= $this->createLdapLinkMock(null);
         $bind = new Binding($link);
         $this->assertSame($link, $bind->getLink());
     }
 
-    public function test_isBound_Unbound()
+    public function test__isBound__Unbound()
     {
         $link= $this->createLdapLinkMock(null);
         $bind = new Binding($link);
         $this->assertSame(false, $bind->isBound());
     }
 
-    public function test_errno_1()
+    public function test__errno_1()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -78,7 +77,7 @@ class BindingTest extends TestCase
         $this->assertSame(2, $c->errno());
     }
 
-    public function test_errno_2()
+    public function test__errno_2()
     {
         $link = $this->createLdapLinkMock(false);
         $link->expects($this->never())
@@ -88,7 +87,7 @@ class BindingTest extends TestCase
         $this->assertSame(-1, $c->errno());
     }
 
-    public function test_bind_Uninitialized_1()
+    public function test__bind__Uninitialized_1()
     {
         $link = $this->createLdapLinkMock(false);
         $c = new Binding($link);
@@ -100,7 +99,7 @@ class BindingTest extends TestCase
         $c->bind();
     }
 
-    public function test_bind_Uninitialized_2()
+    public function test__bind__Uninitialized_2()
     {
         $link = $this->createLdapLinkMock(false);
         $c = new Binding($link);
@@ -111,7 +110,7 @@ class BindingTest extends TestCase
         $this->assertFalse($c->isBound());
     }
 
-    public function test_bind_NoArgs()
+    public function test__bind__NoArgs()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -124,7 +123,7 @@ class BindingTest extends TestCase
         $this->assertTrue($c->isBound());
     }
 
-    public function test_bind_OnlyBindDn()
+    public function test__bind__OnlyBindDn()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -137,7 +136,7 @@ class BindingTest extends TestCase
         $this->assertTrue($c->isBound());
     }
 
-    public function test_bind_BindDnAndPassword()
+    public function test__bind__BindDnAndPassword()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -153,7 +152,7 @@ class BindingTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_bind_Failure_1()
+    public function test__bind__Failure_1()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -182,7 +181,7 @@ class BindingTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_bind_Failure_2()
+    public function test__bind__Failure_2()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -207,7 +206,7 @@ class BindingTest extends TestCase
         $this->assertFalse($c->isBound());
     }
 
-    public function test_getOption_Uninitialized()
+    public function test__getOption__Uninitialized()
     {
         $link = $this->createLdapLinkMock(false);
         $link->expects($this->never())
@@ -225,7 +224,7 @@ class BindingTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_getOption_Failure()
+    public function test__getOption__Failure()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -251,29 +250,33 @@ class BindingTest extends TestCase
         $c->getOption(0);
     }
 
-    public function test_getOption()
+    public function test__getOption()
     {
-        $link = Phake::mock(LdapLink::class);
+        $link = $this->createMock(LdapLink::class);
 
         $callback = function ($option, &$retval) {
             $retval = 'option zero';
             return true;
         };
 
-        Phake::when($link)->get_option(0, Phake::ignoreRemaining())
-                          ->thenReturnCallback($callback);
-        Phake::when($link)->unbind()
-                          ->thenReturn(true);
-        Phake::when($link)->isValid()
-                          ->thenReturn(true);
+        $link->expects($this->once())
+             ->method('get_option')
+             ->with(0, $this->anything())
+             ->will($this->returnCallback($callback));
+        $link->expects($this->never())
+             ->method('unbind')
+             ->with()
+             ->willReturn(true);
+        $link->expects($this->once())
+             ->method('isValid')
+             ->with()
+             ->willReturn(true);
 
         $c = new Binding($link);
         $this->assertSame('option zero', $c->getOption(0));
-
-        Phake::verify($link, Phake::times(1))->get_option(0, Phake::ignoreRemaining());
     }
 
-    public function test_setOption_Uninitialized()
+    public function test__setOption__Uninitialized()
     {
         $link = $this->createLdapLinkMock(false);
         $link->expects($this->never())
@@ -291,7 +294,7 @@ class BindingTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_setOption_Failure()
+    public function test__setOption__Failure()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -314,7 +317,7 @@ class BindingTest extends TestCase
         $c->setOption(0, 'option zero');
     }
 
-    public function test_setOption()
+    public function test__setOption()
     {
         $link = $this->createLdapLinkMock(true);
         $link->expects($this->once())
@@ -329,7 +332,7 @@ class BindingTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_unbind()
+    public function test__unbind()
     {
         $link = $this->createLdapLinkMock(true, true);
 
@@ -350,7 +353,7 @@ class BindingTest extends TestCase
         $this->assertFalse($c->isBound());
     }
 
-    public function test_unbind_Uninitialized_1()
+    public function test__unbind__Uninitialized_1()
     {
         $link = $this->createLdapLinkMock(false);
         $c = new Binding($link);
@@ -362,7 +365,7 @@ class BindingTest extends TestCase
         $c->unbind();
     }
 
-    public function test_unbind_Uninitialized_2()
+    public function test__unbind__Uninitialized_2()
     {
         $link = $this->createLdapLinkMock(false);
         $c = new Binding($link);
@@ -376,7 +379,7 @@ class BindingTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_unbind_Failure_1()
+    public function test__unbind__Failure_1()
     {
         $link = $this->createLdapLinkMock(true, false);
         $link->expects($this->once())
@@ -401,7 +404,7 @@ class BindingTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function test_unbind_Failure_2()
+    public function test__unbind__Failure_2()
     {
         $link = $this->createLdapLinkMock(true, false);
         $link->expects($this->once())
