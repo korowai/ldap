@@ -22,7 +22,7 @@ use Korowai\Lib\Ldap\Adapter\ReferralsIterationInterface;
  *
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class ResultReference extends ResultRecord implements ResultReferenceInterface, ReferralsIterationInterface
+class ResultReference extends AbstractResultRecord implements ResultReferenceInterface, ReferralsIterationInterface
 {
     /** @var array */
     private $referrals;
@@ -30,28 +30,25 @@ class ResultReference extends ResultRecord implements ResultReferenceInterface, 
     private $iterator;
 
     /**
-     * Returns a ResultReference object made out of *$reference* argument.
+     * Returns ``ResultReferenceInterface::class``.
      *
-     * @param mixed $reference an instance of ResultReferenceInterface or an array.
-     *
-     * @return ResultReference
-     * @throws \InvalidArgumentException when *$reference* is of wrong type
+     * @return string
      */
-    public static function make($reference)
+    public static function getInterfaceName() : string
     {
-        if ($reference instanceof ResultReference) {
-            return $reference;
-        } elseif ($reference instanceof ResultReferenceInterface) {
-            return new static($reference->getDn(), $reference->getReferrals());
-        } elseif (is_array($reference)) {
-            return static::createWithArray($reference);
-        } else {
-            $type = gettype($reference);
-            $type = $type === 'object' ? get_class($reference) : $type;
-            $msg = 'parameter 1 to ResultReference::make() must be ' .
-                   'an instance of ResultReferenceInterface or an array, not ' . $type;
-            throw new \InvalidArgumentException($msg);
-        }
+        return ResultReferenceInterface::class;
+    }
+
+    /**
+     * Creates ResultReference instance taking dn and referrals from another
+     * instance of ResultReferenceInterface.
+     *
+     * @param  ResultReferenceInterface $reference
+     * @return ResultReference
+     */
+    public static function createWithInterface($reference)
+    {
+        return new static($reference->getDn(), $reference->getReferrals());
     }
 
     /**

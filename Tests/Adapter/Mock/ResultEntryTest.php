@@ -164,8 +164,8 @@ class ResultEntryTest extends TestCase
 
     public function test__make__withInvalidArgument()
     {
-        $msg = 'parameter 1 to ResultEntry::make() must be ' .
-               'an instance of ResultEntryInterface or an array, not string';
+        $msg = 'parameter 1 to Korowai\\Lib\\Ldap\\Adapter\\Mock\\ResultEntry::make() must be ' .
+               'an instance of Korowai\\Lib\\Ldap\\Adapter\\ResultEntryInterface or an array, not string';
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($msg);
 

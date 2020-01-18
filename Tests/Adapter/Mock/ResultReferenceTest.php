@@ -162,8 +162,8 @@ class ResultReferenceTest extends TestCase
 
     public function test__make__withInvalidArgument()
     {
-        $msg = 'parameter 1 to ResultReference::make() must be ' .
-               'an instance of ResultReferenceInterface or an array, not string';
+        $msg = 'parameter 1 to Korowai\\Lib\\Ldap\\Adapter\\Mock\\ResultReference::make() must be ' .
+               'an instance of Korowai\\Lib\\Ldap\\Adapter\\ResultReferenceInterface or an array, not string';
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($msg);
 

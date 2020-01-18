@@ -22,7 +22,7 @@ use Korowai\Lib\Ldap\Adapter\ResultAttributeIteratorInterface;
  *
  * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  */
-class ResultEntry extends ResultRecord implements ResultEntryInterface
+class ResultEntry extends AbstractResultRecord implements ResultEntryInterface
 {
     use ResultEntryToEntry;
 
@@ -32,28 +32,25 @@ class ResultEntry extends ResultRecord implements ResultEntryInterface
     private $iterator;
 
     /**
-     * Returns a ResultEntry object made out of *$entry* argument.
+     * Returns ``ResultEntryInterface::class``.
      *
-     * @param mixed $entry an instance of ResultEntryInterface or an array.
-     *
-     * @return ResultEntry
-     * @throws \InvalidArgumentException when *$entry* is of wrong type
+     * @return string
      */
-    public static function make($entry)
+    public static function getInterfaceName() : string
     {
-        if ($entry instanceof ResultEntry) {
-            return $entry;
-        } elseif ($entry instanceof ResultEntryInterface) {
-            return new static($entry->getDn(), $entry->getAttributes());
-        } elseif (is_array($entry)) {
-            return static::createWithArray($entry);
-        } else {
-            $type = gettype($entry);
-            $type = $type === 'object' ? get_class($entry) : $type;
-            $msg = 'parameter 1 to ResultEntry::make() must be ' .
-                   'an instance of ResultEntryInterface or an array, not ' . $type;
-            throw new \InvalidArgumentException($msg);
-        }
+        return ResultEntryInterface::class;
+    }
+
+    /**
+     * Creates ResultEntry instance taking dn and attributes from another
+     * instance of ResultEntryInterface.
+     *
+     * @param  ResultEntryInterface $entry
+     * @return ResultEntry
+     */
+    public static function createWithInterface($entry)
+    {
+        return new static($entry->getDn(), $entry->getAttributes());
     }
 
     /**
