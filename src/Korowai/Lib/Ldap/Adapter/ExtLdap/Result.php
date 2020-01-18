@@ -187,6 +187,22 @@ class Result extends AbstractResult
     /**
      * {@inheritdoc}
      */
+    public function getResultEntries() : array
+    {
+        return iterator_to_array($this->getResultEntryIterator(), false);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultReferences() : array
+    {
+        return iterator_to_array($this->getResultReferenceIterator(), false);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getResultEntryIterator() : ResultEntryIteratorInterface
     {
         $first = $this->first_entry();

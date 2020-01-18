@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Korowai\Lib\Ldap\Adapter\Mock;
 
 use Korowai\Lib\Ldap\Adapter\AbstractResult;
+use Korowai\Lib\Ldap\Adapter\ResultInterface;
 use Korowai\Lib\Ldap\Adapter\ResultEntryIteratorInterface;
 use Korowai\Lib\Ldap\Adapter\ResultReferenceIteratorInterface;
 
@@ -43,8 +44,8 @@ class Result extends AbstractResult
         if ($result instanceof Result) {
             return $result;
         } elseif ($result instanceof ResultInterface) {
-            $entries = iterator_to_array($result->getResultEntryIterator(), false);
-            $references = iterator_to_array($result->getResultReferenceIterator(), false);
+            $entries = $result->getResultEntries();
+            $references = $result->getResultReferences();
             return new static($entries, $references);
         } elseif (is_array($result)) {
             return static::createWithArray($result);
@@ -84,12 +85,13 @@ class Result extends AbstractResult
      */
     public static function createWithArray(array $result)
     {
-        if (($entries = $result['entries'] ?? null) === null) {
-            // filter-out non-entry items
-            $entries = array_filter($result, function ($item, $key) {
+        $entries = $result['entries'] ?? array_filter(
+            $result,
+            function ($item, $key) {
                 return is_int($key);
-            }, ARRAY_FILTER_USE_BOTH);
-        }
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
 
         $entries = array_map(function ($entry) {
             return ResultEntry::make($entry);
@@ -112,6 +114,22 @@ class Result extends AbstractResult
     {
         $this->entries = $entries;
         $this->references = $references;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultEntries() : array
+    {
+        return $this->entries;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultReferences() : array
+    {
+        return $this->references;
     }
 
     /**
