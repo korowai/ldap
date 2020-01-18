@@ -94,6 +94,18 @@ class ResultTest extends TestCase
         $this->assertSame('dc=one', $result->references_key());
     }
 
+    public function test__getResultEntries()
+    {
+        $result = new Result(['E1', 'E2']);
+        $this->assertSame(['E1', 'E2'], $result->getResultEntries());
+    }
+
+    public function test__getResultReferences()
+    {
+        $result = new Result([], ['R1', 'R2']);
+        $this->assertSame(['R1', 'R2'], $result->getResultReferences());
+    }
+
     public function test__getResultEntryIterator()
     {
         $result = new Result([]);
@@ -215,6 +227,114 @@ class ResultTest extends TestCase
             $count++;
         }
         $this->assertSame(3, $count);
+    }
+
+    public function test__createWithArray__nonFlatWithObjects()
+    {
+        $entries = [
+            new ResultEntry('dc=a', ['foo' => 'FOO-a']),
+            new ResultEntry('dc=b', ['bar' => 'BAR-b'])
+        ];
+        $references = [
+            new ResultReference('dc=c', ['geez'])
+        ];
+
+        $config = ['entries' => $entries, 'references' => $references];
+
+        $result = Result::createWithArray($config);
+
+        $this->assertSame($entries, $result->getResultEntries());
+        $this->assertSame($references, $result->getResultReferences());
+    }
+
+    public function test__createWithArray__flatWithObjects()
+    {
+        $entries = [
+            new ResultEntry('dc=a', ['foo' => 'FOO-a']),
+            new ResultEntry('dc=b', ['bar' => 'BAR-b'])
+        ];
+        $references = [
+            new ResultReference('dc=c', ['geez'])
+        ];
+
+        $config = array_merge($entries, ['references' => $references]);
+
+        $result = Result::createWithArray($config);
+
+        $this->assertSame($entries, $result->getResultEntries());
+        $this->assertSame($references, $result->getResultReferences());
+    }
+
+    public function test__createWithArray__withoutReferences()
+    {
+        $entries = [
+            new ResultEntry('dc=a', ['foo' => 'FOO-a']),
+            new ResultEntry('dc=b', ['bar' => 'BAR-b'])
+        ];
+
+        $result = Result::createWithArray($entries);
+
+        $this->assertSame($entries, $result->getResultEntries());
+    }
+
+    public function test__make__withResult()
+    {
+        $result = $this->createMock(Result::class);
+        $this->assertSame($result, Result::make($result));
+    }
+
+    public function test__make__withResultInterface()
+    {
+        $entries = ['e1', 'e2'];
+        $references = ['r1', 'r2'];
+
+        $result1 = $this->getMockBuilder(ResultInterface::class)
+                        ->getMockForAbstractClass();
+
+        $result1->expects($this->once())
+                  ->method('getResultEntries')
+                  ->with()
+                  ->willReturn($entries);
+
+        $result1->expects($this->once())
+                  ->method('getResultReferences')
+                  ->with()
+                  ->willReturn($references);
+
+
+        $result2 = Result::make($result1);
+
+        $this->assertNotSame($result2, $result1);
+        $this->assertSame($entries, $result2->getResultEntries());
+        $this->assertSame($references, $result2->getResultReferences());
+    }
+
+    public function test__make__withArray()
+    {
+        $entries = [
+            new ResultEntry('dc=a', ['foo' => 'FOO-a']),
+            new ResultEntry('dc=b', ['bar' => 'BAR-b'])
+        ];
+        $references = [
+            new ResultReference('dc=c', ['geez'])
+        ];
+
+        $config = array_merge($entries, ['references' => $references]);
+
+        $result = Result::make($config);
+
+        $this->assertSame($entries, $result->getResultEntries());
+        $this->assertSame($references, $result->getResultReferences());
+    }
+
+    public function test__make__withWrongArgument()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $msg = 'parameter 1 to Result::make() must be an instance of ' .
+               'ResultInterface or an array, not string';
+        $this->expectExceptionMessage($msg);
+
+        Result::make('foo');
     }
 }
 

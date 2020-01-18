@@ -203,6 +203,58 @@ class ResultTest extends TestCase
         $this->assertSame(array('sorted'), $result->sort('sortfilter'));
     }
 
+    public function test__getResultEntries()
+    {
+        $link = $this->createMock(LdapLink::class);
+        $entry1 = $this->createMock(ResultEntry::class);
+        $entry2 = $this->createMock(ResultEntry::class);
+        $result = new Result('ldap result', $link);
+
+        $link->expects($this->any())
+             ->method('first_entry')
+             ->with($result)
+             ->willReturn($entry1);
+        $entry1->expects($this->once())
+               ->method('next_entry')
+               ->with()
+               ->willReturn($entry2);
+        $entry2->expects($this->once())
+               ->method('next_entry')
+               ->with()
+               ->willReturn(false);
+
+        $entries = $result->getResultEntries();
+        $this->assertIsArray($entries);
+        $this->assertCount(2, $entries);
+        $this->assertSame([$entry1, $entry2], $entries);
+    }
+
+    public function test__getResultReferences()
+    {
+        $link = $this->createMock(LdapLink::class);
+        $reference1 = $this->createMock(ResultReference::class);
+        $reference2 = $this->createMock(ResultReference::class);
+        $result = new Result('ldap result', $link);
+
+        $link->expects($this->any())
+             ->method('first_reference')
+             ->with($result)
+             ->willReturn($reference1);
+        $reference1->expects($this->once())
+               ->method('next_reference')
+               ->with()
+               ->willReturn($reference2);
+        $reference2->expects($this->once())
+               ->method('next_reference')
+               ->with()
+               ->willReturn(false);
+
+        $references = $result->getResultReferences();
+        $this->assertIsArray($references);
+        $this->assertCount(2, $references);
+        $this->assertSame([$reference1, $reference2], $references);
+    }
+
     public function test__getResultEntryIterator()
     {
         $link = $this->createMock(LdapLink::class);
