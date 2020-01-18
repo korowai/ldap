@@ -30,9 +30,9 @@ abstract class AbstractResultRecord implements ResultRecordInterface
     abstract public static function createWithArray(array $record);
 
     /**
-     * Returns a ResultEntry object made out of *$record* argument.
+     * Returns a ResultEntry/ResultReference object made out of *$record* argument.
      *
-     * @param mixed $record an instance of ResultEntryInterface or an array.
+     * @param mixed $record an instance of ResultEntryInterface/ResultReferenceInterface or an array.
      *
      * @return ResultEntry
      * @throws \InvalidArgumentException when *$record* is of wrong type
