@@ -16,7 +16,7 @@
       "source": "https://github.com/korowai/framework"
     },
     "require": {
-        "php": ">=7.1.3",
+        "php": ">=7.2",
         "ext-ldap": "*",
         "symfony/options-resolver": ">=4.2",
         "korowai/contracts": "*",
@@ -28,18 +28,20 @@
     },
     "autoload": {
       "psr-4" : {
-        "Korowai\\Lib\\Ldap\\" : "src/Korowai/Lib/Ldap"
+        "Korowai\\Lib\\Ldap\\" : "src/"
       },
       "exclude-from-classmap": [
-        "/Tests/",
         "/Behat/",
-        "/Resources/"
+        "/Resources/",
+        "/Testing/",
+        "/tests/"
       ]
     },
     "autoload-dev": {
       "psr-4" : {
-        "Korowai\\Lib\\Ldap\\Tests\\" : "Tests/",
-        "Korowai\\Lib\\Ldap\\Behat\\" : "Behat/"
+        "Korowai\\Lib\\Ldap\\Behat\\" : "Behat/",
+        "Korowai\\Testing\\Ldaplib\\" : "Testing/",
+        "Korowai\\Tests\\Lib\\Ldap\\" : "tests/"
       }
     }
 }

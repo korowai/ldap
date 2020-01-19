@@ -1,12 +1,11 @@
 <?php
-/**
- * @file Behat/ExtLdapContext.php
+
+/*
+ * This file is part of Korowai framework.
  *
- * This file is part of the Korowai package
+ * (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
  *
- * @author Paweł Tomulik <ptomulik@meil.pw.edu.pl>
- * @package korowai\ldaplib
- * @license Distributed under MIT license.
+ * Distributed under MIT license.
  */
 
 declare(strict_types=1);
@@ -86,7 +85,7 @@ class ExtLdapContext implements Context
      */
     public function iAmConnectedToUri($uri)
     {
-        $config = array('uri' => $uri);
+        $config = ['uri' => $uri];
         try {
             $this->ldap = Ldap::createWithConfig($config);
         } catch (\Exception $e) {
